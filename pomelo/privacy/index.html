@@ -107,15 +107,16 @@
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: 18 May 2026</p>
+    <p class="updated">Last updated: 19 May 2026</p>
 
     <p>Pomelo is a currency converter app. This document describes what data the app does — and does not — collect.</p>
 
     <h2>Short version</h2>
     <ul>
-      <li><strong>Pomelo does not collect, store, or transmit any personal data.</strong></li>
-      <li><strong>No accounts, no analytics, no advertising, no tracking.</strong></li>
-      <li>The only network call the app makes is to a public exchange-rate API to fetch daily currency rates.</li>
+      <li><strong>Pomelo itself does not collect, store, or transmit any personal data.</strong></li>
+      <li><strong>No accounts, no analytics, no tracking across other apps.</strong></li>
+      <li>Pomelo displays a single banner ad via Google AdMob, in <strong>non-personalised</strong> mode — your IDFA is never used and the App Tracking Transparency prompt is never shown.</li>
+      <li>The only Pomelo network call is to a public exchange-rate API to fetch daily currency rates.</li>
     </ul>
 
     <h2>What stays on your device</h2>
@@ -129,20 +130,36 @@
     </ul>
     <p>If you delete the app, this data is removed with it.</p>
 
-    <h2>What is sent over the network</h2>
+    <h2>What is sent over the network by Pomelo</h2>
     <p>Once per day (or when first launched, or when stale), Pomelo makes a single request to:</p>
     <pre>https://open.er-api.com/v6/latest/USD</pre>
     <p>This is the public ExchangeRate-API endpoint. The request sends nothing about you — no account, no device identifier, no location. It simply asks for the latest USD-based exchange rates and receives a list back. The response is cached on your device so the request only happens at most once every 24 hours.</p>
-    <p>ExchangeRate-API's own terms are available at <a href="https://www.exchangerate-api.com/terms">exchangerate-api.com/terms</a>.</p>
+    <p>ExchangeRate-API's terms are at <a href="https://www.exchangerate-api.com/terms">exchangerate-api.com/terms</a>.</p>
+
+    <h2>Advertising (Google AdMob)</h2>
+    <p>Pomelo displays a single banner ad pinned to the bottom of the converter screen. The ad is served by Google AdMob.</p>
+    <ul>
+      <li><strong>Non-personalised mode only.</strong> Google serves contextual ads based on coarse signals (your country, the app you're in) rather than a profile of you.</li>
+      <li><strong>No App Tracking Transparency prompt.</strong> Your IDFA is not used by Pomelo for tracking.</li>
+      <li>Google may still collect data necessary to serve and measure the ad: IP address, device type, app version, and a per-device anonymous identifier (IDFV). What Google does with that is governed by their own policy:</li>
+    </ul>
+    <ul>
+      <li>Google's Privacy Policy: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+      <li>How Google uses information from sites that use their services: <a href="https://policies.google.com/technologies/partner-sites">policies.google.com/technologies/partner-sites</a></li>
+    </ul>
 
     <h2>Third-party services</h2>
-    <p>The only third-party service Pomelo communicates with is ExchangeRate-API, as described above. Pomelo includes <strong>no</strong> advertising SDK, <strong>no</strong> analytics SDK, <strong>no</strong> crash-reporting service, and no other third-party tracking.</p>
+    <ul>
+      <li><strong>ExchangeRate-API</strong> — public exchange-rate data, no identifying information sent.</li>
+      <li><strong>Google AdMob</strong> — banner advertising, non-personalised mode.</li>
+    </ul>
+    <p>That's it. Pomelo includes <strong>no</strong> analytics SDK, <strong>no</strong> crash-reporting service, and <strong>no</strong> other third-party tracking.</p>
 
     <h2>Children</h2>
-    <p>Pomelo does not knowingly collect any data from anyone, including children. It is suitable for users of all ages.</p>
+    <p>Pomelo does not knowingly target or collect data from children under 13.</p>
 
     <h2>Permissions</h2>
-    <p>Pomelo does not request any of the following: location, contacts, photos, camera, microphone, tracking (App Tracking Transparency), notifications, or background activity.</p>
+    <p>Pomelo does not request any of the following: location, contacts, photos, camera, microphone, App Tracking Transparency, notifications, or background activity.</p>
 
     <h2>Changes to this policy</h2>
     <p>If this policy changes in the future, the updated version will be published at the same URL where you are currently reading it, and the "Last updated" date above will change.</p>
