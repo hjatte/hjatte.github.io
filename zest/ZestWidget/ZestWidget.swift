@@ -37,6 +37,16 @@ private func articleLink(_ headline: WidgetHeadline) -> URL {
     return comps.url ?? URL(string: "\(AppGroup.urlScheme)://article")!
 }
 
+/// "BBC News · Politics" — source plus section when both are present.
+private func sourceLabel(_ h: WidgetHeadline) -> String {
+    let section = h.section.isEmpty ? "" : h.section.capitalized
+    switch (h.source.isEmpty, section.isEmpty) {
+    case (false, false): return "\(h.source) · \(section)"
+    case (false, true):  return h.source
+    default:             return section
+    }
+}
+
 // MARK: - Views
 
 struct ZestWidgetEntryView: View {
@@ -65,7 +75,7 @@ private struct SmallWidget: View {
                 .font(.caption2.weight(.bold)).foregroundStyle(.tint)
             Text(top.title).font(.subheadline.weight(.semibold)).lineLimit(4)
             Spacer(minLength: 0)
-            Text(top.section.uppercased()).font(.caption2).foregroundStyle(.secondary)
+            Text(sourceLabel(top)).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .widgetURL(articleLink(top))
@@ -91,7 +101,7 @@ private struct ListWidget: View {
                 Link(destination: articleLink(h)) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(h.title).font(.subheadline.weight(.medium)).lineLimit(2)
-                        Text(h.section.uppercased()).font(.caption2).foregroundStyle(.secondary)
+                        Text(sourceLabel(h)).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -143,11 +153,11 @@ extension WidgetSnapshot {
     static let sample = WidgetSnapshot(
         headlines: [
             .init(id: "1", title: "Chancellor unveils surprise budget shake-up", section: "politics",
-                  url: "https://www.theguardian.com", publishedAt: .now, score: 88),
+                  source: "BBC News", url: "https://www.bbc.co.uk", publishedAt: .now, score: 88),
             .init(id: "2", title: "New telescope captures sharpest image of distant galaxy", section: "science",
-                  url: "https://www.theguardian.com", publishedAt: .now, score: 64),
+                  source: "The Guardian", url: "https://www.theguardian.com", publishedAt: .now, score: 64),
             .init(id: "3", title: "Late winner sends underdogs into the final", section: "football",
-                  url: "https://www.theguardian.com", publishedAt: .now, score: 52)
+                  source: "Sky News", url: "https://news.sky.com", publishedAt: .now, score: 52)
         ],
         updatedAt: .now,
         topInterests: ["uk", "politics", "science"]

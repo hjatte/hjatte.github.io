@@ -12,8 +12,8 @@ struct SwipeCardView: View {
         VStack(alignment: .leading, spacing: 0) {
             thumbnail
             VStack(alignment: .leading, spacing: 8) {
-                Text(article.section.uppercased())
-                    .font(.caption2.weight(.bold)).foregroundStyle(.tint)
+                SourceBadge(source: article.pillar ?? article.section.capitalized,
+                            category: article.section)
                 Text(article.title)
                     .font(.title3.weight(.semibold)).lineLimit(3)
                 if let trail = article.trailText {

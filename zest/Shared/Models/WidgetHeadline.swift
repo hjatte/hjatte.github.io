@@ -6,6 +6,8 @@ struct WidgetHeadline: Codable, Identifiable, Hashable {
     let id: String
     let title: String
     let section: String
+    /// Publisher name, e.g. "BBC News" — shown as the source label.
+    let source: String
     let url: String
     let publishedAt: Date
 

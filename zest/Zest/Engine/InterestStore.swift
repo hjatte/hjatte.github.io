@@ -11,10 +11,14 @@ final class InterestStore: ObservableObject {
 
     @Published private(set) var profile: InterestProfile
     @Published private(set) var seenIDs: Set<String>
+    /// Topics the user explicitly pinned. These are always boosted in the feed
+    /// and never decay or get pruned — they sit on top of what the engine learns.
+    @Published private(set) var pinnedTags: Set<String>
 
     private let defaults = AppGroup.defaults
     private let profileKey = "interest.profile.v1"
     private let seenKey = "interest.seen.v1"
+    private let pinnedKey = "interest.pinned.v1"
 
     init() {
         if let data = defaults.data(forKey: profileKey),
@@ -29,6 +33,12 @@ final class InterestStore: ObservableObject {
             seenIDs = Set(saved)
         } else {
             seenIDs = []
+        }
+
+        if let saved = defaults.array(forKey: pinnedKey) as? [String] {
+            pinnedTags = Set(saved)
+        } else {
+            pinnedTags = []
         }
 
         profile.prune()
@@ -62,10 +72,40 @@ final class InterestStore: ObservableObject {
         persist()
     }
 
+    // MARK: Pinned topics
+
+    /// Pins a free-text topic. Multi-word input is split into tokens (so
+    /// "climate change" pins both "climate" and "change"), matching how
+    /// articles are tagged. Also gives each token a learned-score head start.
+    func pin(_ rawTopic: String) {
+        let tokens = InterestStore.tokenize(rawTopic)
+        guard !tokens.isEmpty else { return }
+        pinnedTags.formUnion(tokens)
+        profile.apply(.onboardingLike, tags: tokens) // so it shows up immediately
+        persist()
+    }
+
+    func unpin(_ tag: String) {
+        pinnedTags.remove(tag)
+        persist()
+    }
+
+    func isPinned(_ tag: String) -> Bool { pinnedTags.contains(tag) }
+
+    /// Normalises free text into interest tokens (lower-cased, split on spaces
+    /// and hyphens, short/stop words dropped).
+    static func tokenize(_ raw: String) -> [String] {
+        raw.lowercased()
+            .split { $0 == " " || $0 == "-" || $0 == "," }
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { $0.count >= 2 }
+    }
+
     /// Wipe everything (used by "Reset interests").
     func reset() {
         profile = InterestProfile()
         seenIDs = []
+        pinnedTags = []
         persist()
     }
 
@@ -75,7 +115,7 @@ final class InterestStore: ObservableObject {
     func publishToWidget(rankedTop articles: [Article]) {
         let headlines = articles.prefix(6).map {
             WidgetHeadline(id: $0.id, title: $0.title, section: $0.section,
-                           url: $0.url, publishedAt: $0.publishedAt,
+                           source: $0.pillar ?? "", url: $0.url, publishedAt: $0.publishedAt,
                            score: $0.tags.reduce(0) { $0 + profile.effectiveScore($1) })
         }
         let snapshot = WidgetSnapshot(
@@ -95,5 +135,6 @@ final class InterestStore: ObservableObject {
         if let data = try? JSONEncoder.shared.encode(Array(seenIDs)) {
             defaults.set(data, forKey: seenKey)
         }
+        defaults.set(Array(pinnedTags), forKey: pinnedKey)
     }
 }

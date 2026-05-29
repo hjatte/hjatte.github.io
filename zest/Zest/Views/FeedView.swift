@@ -7,16 +7,30 @@ struct FeedView: View {
     @Binding var pendingURL: URL?
 
     @State private var reader: ReaderLink?
+    @State private var searchText = ""
 
     init(client: NewsAPIClient, pendingURL: Binding<URL?>) {
         _vm = StateObject(wrappedValue: FeedViewModel(client: client, store: InterestStore.shared))
         _pendingURL = pendingURL
     }
 
+    /// Articles filtered by the in-feed search box (title / source / topic).
+    private var visibleArticles: [Article] {
+        let q = searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !q.isEmpty else { return vm.articles }
+        return vm.articles.filter {
+            $0.title.lowercased().contains(q)
+            || $0.section.lowercased().contains(q)
+            || ($0.pillar?.lowercased().contains(q) ?? false)
+            || $0.tags.contains { $0.contains(q) }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             content
                 .navigationTitle("Your Feed")
+                .searchable(text: $searchText, prompt: "Search this feed")
                 .toolbar {
                     Button { Task { await vm.refresh() } } label: {
                         Image(systemName: "arrow.clockwise")
@@ -43,16 +57,21 @@ struct FeedView: View {
             ContentUnavailableView("Nothing yet", systemImage: "newspaper",
                                    description: Text("Pull to refresh or tune your interests."))
         case .loaded:
-            list
+            if visibleArticles.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            } else {
+                list
+            }
         }
     }
 
     private var list: some View {
-        List(vm.articles) { article in
+        List(visibleArticles) { article in
             Button {
                 open(article)
             } label: {
-                ArticleRow(article: article)
+                ArticleRow(article: article,
+                           isPinned: article.tags.contains(where: store.pinnedTags.contains))
             }
             .buttonStyle(.plain)
             .swipeActions(edge: .trailing) {
@@ -76,12 +95,19 @@ struct FeedView: View {
 /// One row in the feed.
 struct ArticleRow: View {
     let article: Article
+    var isPinned = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(article.section.uppercased())
-                    .font(.caption2.weight(.bold)).foregroundStyle(.tint)
+                HStack(spacing: 6) {
+                    SourceBadge(source: article.pillar ?? article.section.capitalized,
+                                category: article.section)
+                    if isPinned {
+                        Image(systemName: "pin.fill")
+                            .font(.caption2).foregroundStyle(.tint)
+                    }
+                }
                 Text(article.title).font(.headline).lineLimit(3)
                 if let trail = article.trailText {
                     Text(trail).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)

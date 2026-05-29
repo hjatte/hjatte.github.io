@@ -43,6 +43,9 @@ struct MainTabView: View {
             FeedView(client: client, pendingURL: $pendingURL)
                 .tabItem { Label("Feed", systemImage: "newspaper") }
 
+            TopicsView()
+                .tabItem { Label("Topics", systemImage: "pin") }
+
             OnboardingView(client: client, isFirstRun: false, onFinish: {})
                 .tabItem { Label("Tune", systemImage: "slider.horizontal.3") }
 

@@ -13,12 +13,20 @@ enum FeedRanker {
         _ articles: [Article],
         profile: InterestProfile,
         seenIDs: Set<String>,
+        pinnedTags: Set<String> = [],
         now: Date = .now,
         explorationEpsilon: Double = 4
     ) -> [Article] {
         articles
             .map { article -> (Article, Double) in
                 let interest = article.tags.reduce(0) { $0 + profile.effectiveScore($1, asOf: now) }
+
+                // Pinned topics get a strong, non-decaying boost so the things
+                // the user explicitly cares about reliably rise to the top.
+                // Boost exceeds the max possible learned score so a pinned
+                // topic reliably beats even the most-engaged learned one.
+                let pinnedHits = article.tags.filter(pinnedTags.contains).count
+                let pinnedBoost = pinnedHits > 0 ? 200.0 + Double(pinnedHits - 1) * 30 : 0
 
                 let ageHours = max(0, now.timeIntervalSince(article.publishedAt) / 3600)
                 let recency = 12 * exp(-ageHours / 48)        // ~2-day freshness window
@@ -27,7 +35,7 @@ enum FeedRanker {
 
                 let exploration = Double.random(in: 0...explorationEpsilon)
 
-                return (article, interest + recency - seenPenalty + exploration)
+                return (article, interest + pinnedBoost + recency - seenPenalty + exploration)
             }
             .sorted { $0.1 > $1.1 }
             .map { $0.0 }

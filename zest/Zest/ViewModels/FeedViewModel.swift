@@ -27,7 +27,8 @@ final class FeedViewModel: ObservableObject {
         do {
             let interests = store.profile.topTags(limit: 8).map(\.tag)
             let fetched = try await client.fetchFeed(interests: interests)
-            let ranked = FeedRanker.rank(fetched, profile: store.profile, seenIDs: store.seenIDs)
+            let ranked = FeedRanker.rank(fetched, profile: store.profile,
+                                         seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
 
             articles = ranked
             state = ranked.isEmpty ? .empty : .loaded
@@ -43,6 +44,7 @@ final class FeedViewModel: ObservableObject {
 
     /// Re-rank in place without refetching (cheap, e.g. after an interaction).
     func reorder() {
-        articles = FeedRanker.rank(articles, profile: store.profile, seenIDs: store.seenIDs)
+        articles = FeedRanker.rank(articles, profile: store.profile,
+                                   seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
     }
 }

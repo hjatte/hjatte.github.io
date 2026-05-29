@@ -58,6 +58,21 @@ final class InterestEngineTests: XCTestCase {
         XCTAssertTrue(profile.topTags(now: muchLater).isEmpty)
     }
 
+    func testPinnedTopicsOutrankLearnedInterest() {
+        var profile = InterestProfile()
+        // Strong learned interest in "space"…
+        for _ in 0..<5 { profile.apply(.openArticle, tags: ["space"]) }
+
+        let learned = article(["space"], id: "learned")
+        let pinned = article(["gardening"], id: "pinned")
+
+        // …but "gardening" is pinned, so it should win regardless.
+        let ranked = FeedRanker.rank([learned, pinned], profile: profile,
+                                     seenIDs: [], pinnedTags: ["gardening"],
+                                     explorationEpsilon: 0)
+        XCTAssertEqual(ranked.first?.id, "pinned")
+    }
+
     func testRankerFavoursHigherInterest() {
         var profile = InterestProfile()
         profile.apply(.openArticle, tags: ["space"])  // strong interest

@@ -40,6 +40,9 @@ Everything else you asked for is here and works.
 | Scrollable widget on the left Home Screen | Widget shows top stories in Today View (can't scroll — see note above) |
 | Multiple news sources, free, for everyone | `RSSClient` aggregates ~25 free RSS/Atom feeds; no key, dead feeds skipped |
 | Choose your sources | Settings → News sources lets anyone toggle publishers on/off |
+| See where each story came from | `SourceBadge` shows a coloured publisher monogram + name on every card and widget item |
+| Pin your own topics | **Topics** tab: add topics that always rise to the top and never fade |
+| Search the feed | Search bar filters the current feed by headline, source, or topic |
 
 ---
 
@@ -133,9 +136,14 @@ The whole "brain" is in `Zest/Engine/`. In plain terms:
    a small **impression penalty** — scaled by how rarely you click them. Topics
    you keep seeing but never tap fade faster, then `prune()` deletes them.
 
-5. **Ranking.** The feed scores each article = Σ(tag scores) + a freshness bonus
-   − a seen-before penalty + a little **exploration randomness**, so the feed
-   never collapses to one topic and faded interests can resurface.
+5. **Pinned topics.** Topics you pin in the **Topics** tab get a large,
+   non-decaying boost so they reliably sit at the top — they layer *on top of*
+   the learned model rather than replacing it.
+
+6. **Ranking.** The feed scores each article = Σ(tag scores) + pinned boost +
+   a freshness bonus − a seen-before penalty + a little **exploration
+   randomness**, so the feed never collapses to one topic and faded interests
+   can resurface.
 
 Run the unit tests (`⌘U`, the `ZestTests` target) to see all of this verified.
 
