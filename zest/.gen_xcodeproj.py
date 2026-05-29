@@ -38,7 +38,7 @@ SOURCES = [
     "Zest/Views/SwipeCardView.swift",
     "Zest/Views/TopicsView.swift",
 ]
-RESOURCES = ["Zest/Assets.xcassets", "Zest/App/PrivacyInfo.xcprivacy"]
+RESOURCES = ["Zest/Assets.xcassets", "Zest/App/PrivacyInfo.xcprivacy", "Zest/Resources/Readability.js"]
 INFO_PLIST = "Zest/App/Info.plist"
 
 _counter = 0
@@ -52,6 +52,7 @@ def ftype(path):
     if path.endswith(".xcassets"): return "folder.assetcatalog"
     if path.endswith(".xcprivacy"): return "text.plist.xml"
     if path.endswith(".plist"): return "text.plist.xml"
+    if path.endswith(".js"): return "sourcecode.javascript"
     return "text"
 
 # Allocate IDs
@@ -206,7 +207,7 @@ TARGET_COMMON = """\t\t\t\tASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 \t\t\t\tASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 \t\t\t\tCODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 \t\t\t\tCODE_SIGN_STYLE = Automatic;
-\t\t\t\tCURRENT_PROJECT_VERSION = 13;
+\t\t\t\tCURRENT_PROJECT_VERSION = 14;
 \t\t\t\tDEVELOPMENT_TEAM = "";
 \t\t\t\tENABLE_PREVIEWS = YES;
 \t\t\t\tGENERATE_INFOPLIST_FILE = NO;

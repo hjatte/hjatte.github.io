@@ -44,7 +44,7 @@ struct FeedView: View {
             if let url { reader = ReaderLink(url: url); pendingURL = nil }
         }
         .fullScreenCover(item: $reader) { link in
-            SafariView(url: link.url).ignoresSafeArea()
+            ArticleReaderView(url: link.url)
         }
     }
 

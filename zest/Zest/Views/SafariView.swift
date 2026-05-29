@@ -1,42 +1,158 @@
 import SwiftUI
-import SafariServices
+import WebKit
 
-/// Lets a `URL` drive `.fullScreenCover(item:)` / `.sheet(item:)`.
+/// Lets a `URL` drive `.fullScreenCover(item:)`.
 struct ReaderLink: Identifiable {
     let url: URL
     var id: String { url.absoluteString }
 }
 
-/// In-app reader using Apple's Safari view: opens articles in **Reader mode**
-/// automatically (clean, ad-free text) when the page supports it. Has a Done
-/// button (returns to the app) and Share built in, and its own top bar so the
-/// status bar / clock stays readable.
-struct SafariView: UIViewControllerRepresentable {
-    let url: URL
-    @Environment(\.dismiss) private var dismiss
+/// Owns the web view and turns the loaded page into a clean reader article
+/// using Mozilla's Readability. Falls back to the plain page if extraction fails.
+/// (All WebKit callbacks arrive on the main thread.)
+final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
+    let webView = WKWebView()
+    @Published var isLoading = true
 
-    func makeCoordinator() -> Coordinator { Coordinator(dismiss: dismiss) }
+    private let url: URL
+    private let readabilityJS: String
+    /// True while we still need to extract reader content from the loaded page.
+    private var pendingExtraction = false
 
-    func makeUIViewController(context: Context) -> SFSafariViewController {
-        let config = SFSafariViewController.Configuration()
-        config.entersReaderIfAvailable = true            // ← automatic Reader mode
-        config.barCollapsingEnabled = true
-
-        let controller = SFSafariViewController(url: url, configuration: config)
-        controller.dismissButtonStyle = .done
-        controller.preferredControlTintColor = UIColor(ThemeSettings.shared.flavour.accent)
-        controller.delegate = context.coordinator
-        return controller
+    init(url: URL) {
+        self.url = url
+        if let path = Bundle.main.url(forResource: "Readability", withExtension: "js"),
+           let js = try? String(contentsOf: path, encoding: .utf8) {
+            readabilityJS = js
+        } else {
+            readabilityJS = ""
+        }
+        super.init()
+        webView.navigationDelegate = self
     }
 
-    func updateUIViewController(_ controller: SFSafariViewController, context: Context) {}
+    func showReader() { pendingExtraction = true;  isLoading = true; webView.load(URLRequest(url: url)) }
+    func showWeb()    { pendingExtraction = false; isLoading = true; webView.load(URLRequest(url: url)) }
 
-    final class Coordinator: NSObject, SFSafariViewControllerDelegate {
-        private let dismiss: DismissAction
-        init(dismiss: DismissAction) { self.dismiss = dismiss }
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        guard pendingExtraction, !readabilityJS.isEmpty else { isLoading = false; return }
 
-        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-            dismiss()
+        let js = readabilityJS + """
+        ;(function(){ try {
+          var a = new Readability(document.cloneNode(true)).parse();
+          return a ? JSON.stringify({title:a.title||'', byline:a.byline||'', content:a.content||''}) : '';
+        } catch (e) { return ''; } })();
+        """
+        webView.evaluateJavaScript(js) { [weak self] result, _ in
+            guard let self else { return }
+            self.pendingExtraction = false   // the next didFinish is our clean HTML
+            if let json = result as? String, let data = json.data(using: .utf8),
+               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let content = obj["content"] as? String, !content.isEmpty {
+                webView.loadHTMLString(
+                    self.styledHTML(title: obj["title"] as? String ?? "",
+                                    byline: obj["byline"] as? String ?? "",
+                                    content: content),
+                    baseURL: self.url)
+            } else {
+                self.isLoading = false   // extraction failed → leave the plain page
+            }
         }
     }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { isLoading = false }
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { isLoading = false }
+
+    private func styledHTML(title: String, byline: String, content: String) -> String {
+        let flavour = ThemeSettings.shared.flavour
+        let dark = flavour.dark
+        let bg = dark ? "#121212" : "#ffffff"
+        let fg = dark ? "#f2f2f2" : "#1a1a1a"
+        let muted = dark ? "#9a9a9a" : "#6a6a6a"
+        let accent = Self.hex(flavour.accent)
+        let bylineHTML = byline.isEmpty ? "" : "<p class='byline'>\(byline)</p>"
+        return """
+        <!doctype html><html><head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <style>
+          :root { color-scheme: \(dark ? "dark" : "light"); }
+          body { margin: 0; padding: 20px max(20px, env(safe-area-inset-left)) 120px; background: \(bg); color: \(fg);
+                 font: -apple-system-body, -apple-system, system-ui, sans-serif; font-size: 19px; line-height: 1.6;
+                 -webkit-text-size-adjust: 100%; }
+          h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; }
+          .byline { color: \(muted); font-size: 15px; margin: 0 0 20px; }
+          img, figure, video { max-width: 100%; height: auto; border-radius: 10px; margin: 14px 0; }
+          figure { margin-inline: 0; } figcaption { color: \(muted); font-size: 14px; }
+          a { color: \(accent); }
+          p { margin: 0 0 16px; } pre { white-space: pre-wrap; }
+        </style></head><body>
+          <h1>\(title)</h1>\(bylineHTML)\(content)
+        </body></html>
+        """
+    }
+
+    private static func hex(_ color: Color) -> String {
+        let ui = UIColor(color)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        ui.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return String(format: "#%02X%02X%02X", Int(r*255), Int(g*255), Int(b*255))
+    }
+}
+
+/// Full-screen custom reader with our own bottom controls:
+/// Done (back to the app) · Reader/Web toggle · Share.
+struct ArticleReaderView: View {
+    let url: URL
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var model: ReaderModel
+    @State private var readerMode = true
+
+    init(url: URL) {
+        self.url = url
+        _model = StateObject(wrappedValue: ReaderModel(url: url))
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            Color(.systemBackground).ignoresSafeArea()          // keeps the clock readable
+            WebViewHolder(webView: model.webView)
+                .ignoresSafeArea(edges: .bottom)
+            if model.isLoading { ProgressView().controlSize(.large) }
+
+            HStack {
+                control("xmark") { dismiss() }
+                Spacer()
+                control(readerMode ? "globe" : "doc.plaintext") {
+                    readerMode.toggle()
+                    readerMode ? model.showReader() : model.showWeb()
+                }
+                Spacer()
+                ShareLink(item: url) { controlLabel("square.and.arrow.up") }
+            }
+            .padding(.horizontal, 28)
+            .padding(.bottom, 6)
+        }
+        .task { model.showReader() }
+    }
+
+    private func control(_ systemName: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) { controlLabel(systemName) }
+    }
+
+    private func controlLabel(_ systemName: String) -> some View {
+        Image(systemName: systemName)
+            .font(.title3.weight(.semibold))
+            .foregroundStyle(.tint)
+            .frame(width: 52, height: 52)
+            .background(.ultraThinMaterial, in: Circle())
+            .overlay(Circle().strokeBorder(.quaternary))
+            .shadow(radius: 5, y: 3)
+    }
+}
+
+/// Hosts the model's `WKWebView` in SwiftUI.
+struct WebViewHolder: UIViewRepresentable {
+    let webView: WKWebView
+    func makeUIView(context: Context) -> WKWebView { webView }
+    func updateUIView(_ webView: WKWebView, context: Context) {}
 }
