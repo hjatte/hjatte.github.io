@@ -13,7 +13,8 @@ struct SwipeCardView: View {
             thumbnail
             VStack(alignment: .leading, spacing: 8) {
                 SourceBadge(source: article.pillar ?? article.section.capitalized,
-                            category: article.section)
+                            category: article.section,
+                            domain: URL(string: article.url)?.host)
                 Text(article.title)
                     .font(.title3.weight(.semibold)).lineLimit(3)
                 if let trail = article.trailText {

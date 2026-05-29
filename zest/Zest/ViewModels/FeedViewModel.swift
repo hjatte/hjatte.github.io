@@ -13,38 +13,91 @@ final class FeedViewModel: ObservableObject {
     private let client: NewsAPIClient
     private let store: InterestStore
 
+    private let defaults = AppGroup.defaults
+    private let cacheKey = "feed.cache.v1"
+    private let maxFeed = 200
+
     init(client: NewsAPIClient, store: InterestStore) {
         self.client = client
         self.store = store
     }
 
     func loadIfNeeded() async {
-        if articles.isEmpty { await refresh() }
-    }
-
-    func refresh() async {
-        state = .loading
-        do {
-            let interests = store.profile.topTags(limit: 8).map(\.tag)
-            let fetched = try await client.fetchFeed(interests: interests)
-            let ranked = FeedRanker.rank(fetched, profile: store.profile,
-                                         seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
-
-            articles = ranked
-            state = ranked.isEmpty ? .empty : .loaded
-
-            // The feed shaped the user's world this session: record what was
-            // shown (so unclicked topics fade) and hand the top to the widget.
-            store.registerImpressions(for: Array(ranked.prefix(40)))
-            store.publishToWidget(rankedTop: ranked)
-        } catch {
-            state = .failed((error as? LocalizedError)?.errorDescription ?? error.localizedDescription)
+        if articles.isEmpty {
+            // Show the cached, relevance-ordered feed instantly (works offline)…
+            let cached = unreadOnly(loadCache())
+            if !cached.isEmpty {
+                articles = cached
+                state = .loaded
+            }
+            // …then refresh in the background.
+            await refresh()
         }
     }
 
-    /// Re-rank in place without refetching (cheap, e.g. after an interaction).
+    func refresh() async {
+        if articles.isEmpty { state = .loading }
+        do {
+            let interests = store.profile.topTags(limit: 8).map(\.tag)
+            let fetched = try await client.fetchFeed(interests: interests)
+
+            // Merge fresh stories with the relevant ones we already had, drop
+            // anything you've already read, de-dupe, and rank by relevance.
+            let pool = dedupe(loadCache() + fetched)
+            let unread = unreadOnly(pool)
+            let ranked = Array(
+                FeedRanker.rank(unread, profile: store.profile,
+                                seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
+                    .prefix(maxFeed)
+            )
+
+            articles = ranked
+            state = ranked.isEmpty ? .empty : .loaded
+            saveCache(ranked)
+
+            store.registerImpressions(for: Array(ranked.prefix(40)))
+            store.publishToWidget(rankedTop: ranked)
+        } catch {
+            // Offline / fetch failed: keep showing the cached feed if we have one.
+            if articles.isEmpty {
+                state = .failed((error as? LocalizedError)?.errorDescription ?? error.localizedDescription)
+            }
+        }
+    }
+
+    /// Re-rank in place without refetching (e.g. after "show me less"), and drop
+    /// anything now read.
     func reorder() {
-        articles = FeedRanker.rank(articles, profile: store.profile,
+        let unread = unreadOnly(articles)
+        articles = FeedRanker.rank(unread, profile: store.profile,
                                    seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
+        saveCache(articles)
+    }
+
+    // MARK: Helpers
+
+    /// Removes articles the user has already opened, so the feed is always fresh.
+    private func unreadOnly(_ list: [Article]) -> [Article] {
+        list.filter { !store.seenIDs.contains($0.id) }
+    }
+
+    private func dedupe(_ list: [Article]) -> [Article] {
+        var seen = Set<String>()
+        return list.filter { seen.insert($0.id).inserted }
+    }
+
+    // MARK: Cache
+
+    private func loadCache() -> [Article] {
+        guard let data = defaults.data(forKey: cacheKey),
+              let cached = try? JSONDecoder.shared.decode([Article].self, from: data)
+        else { return [] }
+        return cached
+    }
+
+    private func saveCache(_ list: [Article]) {
+        if let data = try? JSONEncoder.shared.encode(Array(list.prefix(maxFeed))) {
+            defaults.set(data, forKey: cacheKey)
+        }
     }
 }

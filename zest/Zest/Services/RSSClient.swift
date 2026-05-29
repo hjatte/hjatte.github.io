@@ -11,10 +11,18 @@ struct RSSClient: NewsAPIClient {
 
     /// `sources` is a closure so the live set of enabled sources is read fresh
     /// on every fetch (the user can toggle them in Settings).
-    init(session: URLSession = .shared,
+    init(session: URLSession = RSSClient.makeSession(),
          sources: @escaping @Sendable () -> [NewsSource] = { SourceSettings.shared.enabledSources }) {
         self.session = session
         self.sources = sources
+    }
+
+    private static func makeSession() -> URLSession {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 20
+        config.waitsForConnectivity = true
+        config.requestCachePolicy = .reloadRevalidatingCacheData
+        return URLSession(configuration: config)
     }
 
     func fetchTuningDeck() async throws -> [Article] {
@@ -62,8 +70,14 @@ struct RSSClient: NewsAPIClient {
     private func fetchOne(_ source: NewsSource) async -> [Article] {
         do {
             var request = URLRequest(url: source.feedURL)
-            request.setValue("Zest/1.0 (RSS reader)", forHTTPHeaderField: "User-Agent")
-            request.timeoutInterval = 12
+            // A browser-style User-Agent + Accept header so sites behind
+            // bot-protection (Cloudflare etc.) don't reject the request.
+            request.setValue(
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+                forHTTPHeaderField: "User-Agent")
+            request.setValue("application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5",
+                             forHTTPHeaderField: "Accept")
+            request.timeoutInterval = 20
 
             let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {

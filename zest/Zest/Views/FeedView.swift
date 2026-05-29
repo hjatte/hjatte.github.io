@@ -53,10 +53,18 @@ struct FeedView: View {
         case .idle, .loading:
             ProgressView("Loading your feed…")
         case .failed(let message):
-            ErrorState(message: message) { Task { await vm.refresh() } }
+            ScrollView {
+                ErrorState(message: message) { Task { await vm.refresh() } }
+                    .frame(maxWidth: .infinity, minHeight: 500)
+            }
+            .refreshable { await vm.refresh() }
         case .empty:
-            ContentUnavailableView("Nothing yet", systemImage: "newspaper",
-                                   description: Text("Pull to refresh or tune your interests."))
+            ScrollView {
+                ContentUnavailableView("Nothing yet", systemImage: "newspaper",
+                                       description: Text("Pull down to refresh or tune your interests."))
+                    .frame(maxWidth: .infinity, minHeight: 500)
+            }
+            .refreshable { await vm.refresh() }
         case .loaded:
             if visibleArticles.isEmpty {
                 ContentUnavailableView.search(text: searchText)
@@ -138,7 +146,8 @@ struct ArticleRow: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 6) {
                     SourceBadge(source: article.pillar ?? article.section.capitalized,
-                                category: article.section)
+                                category: article.section,
+                                domain: URL(string: article.url)?.host)
                     if isPinned {
                         Image(systemName: "pin.fill")
                             .font(.caption2).foregroundStyle(.tint)
