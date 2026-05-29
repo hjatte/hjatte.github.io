@@ -1,0 +1,10 @@
+# Xcode / build artifacts
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+build/
+.DS_Store
+
+# XcodeGen generates the project from project.yml, so we don't track it.
+# (Delete the line above if you prefer to commit the generated .xcodeproj.)

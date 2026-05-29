@@ -1,0 +1,81 @@
+name: Zest
+options:
+  bundleIdPrefix: com.hjatte
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.9"
+    # Set this to your Apple Developer Team ID (Xcode > Settings > Accounts),
+    # or just pick your team in the Signing & Capabilities tab after generating.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+
+# Pulls GUARDIAN_API_KEY into the build. Copy Configs/Secrets.example.xcconfig
+# to Configs/Secrets.xcconfig and paste your key there (see README).
+configFiles:
+  Debug: Configs/Secrets.xcconfig
+  Release: Configs/Secrets.xcconfig
+
+targets:
+  Zest:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Zest
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hjatte.zest
+        INFOPLIST_FILE: Zest/App/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Zest/App/Zest.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"   # iPhone + iPad
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - target: ZestWidgetExtension
+
+  ZestWidgetExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ZestWidget
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hjatte.zest.widget
+        INFOPLIST_FILE: ZestWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ZestWidget/ZestWidget.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  ZestTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ZestTests
+    dependencies:
+      - target: Zest
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hjatte.zest.tests
+
+schemes:
+  Zest:
+    build:
+      targets:
+        Zest: all
+        ZestWidgetExtension: all
+    run:
+      config: Debug
+    test:
+      targets:
+        - ZestTests
