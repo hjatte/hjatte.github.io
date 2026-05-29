@@ -40,7 +40,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Where your news comes from")
                 } footer: {
-                    Text("Zest aggregates free, open RSS feeds from multiple publishers — no account or API key needed. Turn sources on or off to shape your mix.")
+                    Text("Zesty aggregates free, open RSS feeds from multiple publishers — no account or API key needed. Turn sources on or off to shape your mix.")
                 }
 
                 Section {

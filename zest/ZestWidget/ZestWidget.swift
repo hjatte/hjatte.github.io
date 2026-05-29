@@ -119,7 +119,7 @@ private struct EmptyWidget: View {
     var body: some View {
         VStack(spacing: 6) {
             Image(systemName: "newspaper").font(.title2).foregroundStyle(.tint)
-            Text("Open Zest to load your feed").font(.caption).foregroundStyle(.secondary)
+            Text("Open Zesty to load your feed").font(.caption).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -137,7 +137,7 @@ struct ZestWidget: Widget {
                 .containerBackground(.background, for: .widget)
         }
         .configurationDisplayName("Your Feed")
-        .description("Your top personalised stories. Tap one to read it in Zest.")
+        .description("Your top personalised stories. Tap one to read it in Zesty.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

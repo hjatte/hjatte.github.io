@@ -33,11 +33,12 @@ struct InterestProfile: Codable {
     var halfLifeDays: Double = 14
 
     /// Scores are clamped to this range so nothing dominates forever.
-    let minScore: Double = -40
-    let maxScore: Double = 120
+    /// (Static so they aren't part of the saved/synced Codable data.)
+    static let minScore: Double = -40
+    static let maxScore: Double = 120
 
     /// A tag is dropped entirely once its decayed score falls below this.
-    let pruneThreshold: Double = 0.4
+    static let pruneThreshold: Double = 0.4
 
     // MARK: Decay
 
@@ -84,7 +85,7 @@ struct InterestProfile: Codable {
     /// Removes tags whose decayed score has dropped below the prune threshold.
     /// Call periodically to keep the profile small and let dead interests die.
     mutating func prune(now: Date = .now) {
-        weights = weights.filter { abs(effectiveScore($0.key, asOf: now)) >= pruneThreshold }
+        weights = weights.filter { abs(effectiveScore($0.key, asOf: now)) >= Self.pruneThreshold }
     }
 
     /// The strongest interests right now, most-positive first.
@@ -110,5 +111,5 @@ struct InterestProfile: Codable {
         weights[tag] = w
     }
 
-    private func clamp(_ v: Double) -> Double { min(max(v, minScore), maxScore) }
+    private func clamp(_ v: Double) -> Double { min(max(v, Self.minScore), Self.maxScore) }
 }

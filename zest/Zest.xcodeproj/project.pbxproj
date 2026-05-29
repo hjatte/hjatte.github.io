@@ -22,19 +22,20 @@
 		00000000000000000000001A /* RSSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000019 /* RSSClient.swift */; };
 		00000000000000000000001C /* RSSParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001B /* RSSParser.swift */; };
 		00000000000000000000001E /* SourceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* SourceSettings.swift */; };
-		000000000000000000000020 /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* FeedViewModel.swift */; };
-		000000000000000000000022 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* OnboardingViewModel.swift */; };
-		000000000000000000000024 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* FeedView.swift */; };
-		000000000000000000000026 /* InterestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* InterestsView.swift */; };
-		000000000000000000000028 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000027 /* OnboardingView.swift */; };
-		00000000000000000000002A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000029 /* RootView.swift */; };
-		00000000000000000000002C /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* SafariView.swift */; };
-		00000000000000000000002E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* SettingsView.swift */; };
-		000000000000000000000030 /* SourceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* SourceBadge.swift */; };
-		000000000000000000000032 /* SwipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* SwipeCardView.swift */; };
-		000000000000000000000034 /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* TopicsView.swift */; };
-		000000000000000000000036 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* Assets.xcassets */; };
-		000000000000000000000038 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* PrivacyInfo.xcprivacy */; };
+		000000000000000000000020 /* ThemeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* ThemeSettings.swift */; };
+		000000000000000000000022 /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* FeedViewModel.swift */; };
+		000000000000000000000024 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* OnboardingViewModel.swift */; };
+		000000000000000000000026 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* FeedView.swift */; };
+		000000000000000000000028 /* InterestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000027 /* InterestsView.swift */; };
+		00000000000000000000002A /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000029 /* OnboardingView.swift */; };
+		00000000000000000000002C /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* RootView.swift */; };
+		00000000000000000000002E /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* SafariView.swift */; };
+		000000000000000000000030 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* SettingsView.swift */; };
+		000000000000000000000032 /* SourceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* SourceBadge.swift */; };
+		000000000000000000000034 /* SwipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* SwipeCardView.swift */; };
+		000000000000000000000036 /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* TopicsView.swift */; };
+		000000000000000000000038 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* Assets.xcassets */; };
+		00000000000000000000003A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000039 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,33 +54,34 @@
 		000000000000000000000019 /* RSSClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RSSClient.swift"; path = "Zest/Services/RSSClient.swift"; sourceTree = SOURCE_ROOT; };
 		00000000000000000000001B /* RSSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RSSParser.swift"; path = "Zest/Services/RSSParser.swift"; sourceTree = SOURCE_ROOT; };
 		00000000000000000000001D /* SourceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SourceSettings.swift"; path = "Zest/Services/SourceSettings.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000001F /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeedViewModel.swift"; path = "Zest/ViewModels/FeedViewModel.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000021 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingViewModel.swift"; path = "Zest/ViewModels/OnboardingViewModel.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000023 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeedView.swift"; path = "Zest/Views/FeedView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000025 /* InterestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "InterestsView.swift"; path = "Zest/Views/InterestsView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000027 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingView.swift"; path = "Zest/Views/OnboardingView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000029 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RootView.swift"; path = "Zest/Views/RootView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002B /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SafariView.swift"; path = "Zest/Views/SafariView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SettingsView.swift"; path = "Zest/Views/SettingsView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002F /* SourceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SourceBadge.swift"; path = "Zest/Views/SourceBadge.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000031 /* SwipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SwipeCardView.swift"; path = "Zest/Views/SwipeCardView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000033 /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TopicsView.swift"; path = "Zest/Views/TopicsView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000035 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Assets.xcassets"; path = "Zest/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000037 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PrivacyInfo.xcprivacy"; path = "Zest/App/PrivacyInfo.xcprivacy"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000039 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "Zest/App/Info.plist"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000003A /* Zest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000001F /* ThemeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ThemeSettings.swift"; path = "Zest/Services/ThemeSettings.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000021 /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeedViewModel.swift"; path = "Zest/ViewModels/FeedViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000023 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingViewModel.swift"; path = "Zest/ViewModels/OnboardingViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000025 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeedView.swift"; path = "Zest/Views/FeedView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000027 /* InterestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "InterestsView.swift"; path = "Zest/Views/InterestsView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000029 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingView.swift"; path = "Zest/Views/OnboardingView.swift"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RootView.swift"; path = "Zest/Views/RootView.swift"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002D /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SafariView.swift"; path = "Zest/Views/SafariView.swift"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SettingsView.swift"; path = "Zest/Views/SettingsView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000031 /* SourceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SourceBadge.swift"; path = "Zest/Views/SourceBadge.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000033 /* SwipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SwipeCardView.swift"; path = "Zest/Views/SwipeCardView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000035 /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TopicsView.swift"; path = "Zest/Views/TopicsView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000037 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Assets.xcassets"; path = "Zest/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000039 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PrivacyInfo.xcprivacy"; path = "Zest/App/PrivacyInfo.xcprivacy"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000003B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "Zest/App/Info.plist"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000003C /* Zest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000003F /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		000000000000000000000041 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00000000000000000000003B = {isa = PBXGroup; children = (
-			00000000000000000000003C /* Zest */,
-			00000000000000000000003D /* Products */,
+		00000000000000000000003D = {isa = PBXGroup; children = (
+			00000000000000000000003E /* Zest */,
+			00000000000000000000003F /* Products */,
 		); sourceTree = "<group>"; };
-		00000000000000000000003C /* Zest */ = {isa = PBXGroup; children = (
+		00000000000000000000003E /* Zest */ = {isa = PBXGroup; children = (
 			000000000000000000000001 /* WidgetHeadline.swift */,
 			000000000000000000000003 /* AppGroup.swift */,
 			000000000000000000000005 /* SharedStore.swift */,
@@ -95,47 +97,48 @@
 			000000000000000000000019 /* RSSClient.swift */,
 			00000000000000000000001B /* RSSParser.swift */,
 			00000000000000000000001D /* SourceSettings.swift */,
-			00000000000000000000001F /* FeedViewModel.swift */,
-			000000000000000000000021 /* OnboardingViewModel.swift */,
-			000000000000000000000023 /* FeedView.swift */,
-			000000000000000000000025 /* InterestsView.swift */,
-			000000000000000000000027 /* OnboardingView.swift */,
-			000000000000000000000029 /* RootView.swift */,
-			00000000000000000000002B /* SafariView.swift */,
-			00000000000000000000002D /* SettingsView.swift */,
-			00000000000000000000002F /* SourceBadge.swift */,
-			000000000000000000000031 /* SwipeCardView.swift */,
-			000000000000000000000033 /* TopicsView.swift */,
-			000000000000000000000035 /* Assets.xcassets */,
-			000000000000000000000037 /* PrivacyInfo.xcprivacy */,
-			000000000000000000000039 /* Info.plist */,
+			00000000000000000000001F /* ThemeSettings.swift */,
+			000000000000000000000021 /* FeedViewModel.swift */,
+			000000000000000000000023 /* OnboardingViewModel.swift */,
+			000000000000000000000025 /* FeedView.swift */,
+			000000000000000000000027 /* InterestsView.swift */,
+			000000000000000000000029 /* OnboardingView.swift */,
+			00000000000000000000002B /* RootView.swift */,
+			00000000000000000000002D /* SafariView.swift */,
+			00000000000000000000002F /* SettingsView.swift */,
+			000000000000000000000031 /* SourceBadge.swift */,
+			000000000000000000000033 /* SwipeCardView.swift */,
+			000000000000000000000035 /* TopicsView.swift */,
+			000000000000000000000037 /* Assets.xcassets */,
+			000000000000000000000039 /* PrivacyInfo.xcprivacy */,
+			00000000000000000000003B /* Info.plist */,
 		); name = Zest; sourceTree = "<group>"; };
-		00000000000000000000003D /* Products */ = {isa = PBXGroup; children = (
-			00000000000000000000003A /* Zest.app */,
+		00000000000000000000003F /* Products */ = {isa = PBXGroup; children = (
+			00000000000000000000003C /* Zest.app */,
 		); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		000000000000000000000041 /* Zest */ = {isa = PBXNativeTarget; buildConfigurationList = 000000000000000000000044 /* Build configuration list for PBXNativeTarget "Zest" */; buildPhases = (
-			00000000000000000000003E /* Sources */,
-			00000000000000000000003F /* Frameworks */,
-			000000000000000000000040 /* Resources */,
-		); buildRules = (); dependencies = (); name = Zest; productName = Zest; productReference = 00000000000000000000003A /* Zest.app */; productType = "com.apple.product-type.application"; };
+		000000000000000000000043 /* Zest */ = {isa = PBXNativeTarget; buildConfigurationList = 000000000000000000000046 /* Build configuration list for PBXNativeTarget "Zest" */; buildPhases = (
+			000000000000000000000040 /* Sources */,
+			000000000000000000000041 /* Frameworks */,
+			000000000000000000000042 /* Resources */,
+		); buildRules = (); dependencies = (); name = Zest; productName = Zest; productReference = 00000000000000000000003C /* Zest.app */; productType = "com.apple.product-type.application"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		000000000000000000000042 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {000000000000000000000041 = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = 000000000000000000000043 /* Build configuration list for PBXProject "Zest" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 00000000000000000000003B; productRefGroup = 00000000000000000000003D /* Products */; projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000041 /* Zest */); };
+		000000000000000000000044 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {000000000000000000000043 = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = 000000000000000000000045 /* Build configuration list for PBXProject "Zest" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 00000000000000000000003D; productRefGroup = 00000000000000000000003F /* Products */; projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000043 /* Zest */); };
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		000000000000000000000040 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
-			000000000000000000000036 /* Assets.xcassets in Resources */,
-			000000000000000000000038 /* PrivacyInfo.xcprivacy in Resources */,
+		000000000000000000000042 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
+			000000000000000000000038 /* Assets.xcassets in Resources */,
+			00000000000000000000003A /* PrivacyInfo.xcprivacy in Resources */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00000000000000000000003E /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
+		000000000000000000000040 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 			000000000000000000000002 /* WidgetHeadline.swift in Sources */,
 			000000000000000000000004 /* AppGroup.swift in Sources */,
 			000000000000000000000006 /* SharedStore.swift in Sources */,
@@ -151,22 +154,23 @@
 			00000000000000000000001A /* RSSClient.swift in Sources */,
 			00000000000000000000001C /* RSSParser.swift in Sources */,
 			00000000000000000000001E /* SourceSettings.swift in Sources */,
-			000000000000000000000020 /* FeedViewModel.swift in Sources */,
-			000000000000000000000022 /* OnboardingViewModel.swift in Sources */,
-			000000000000000000000024 /* FeedView.swift in Sources */,
-			000000000000000000000026 /* InterestsView.swift in Sources */,
-			000000000000000000000028 /* OnboardingView.swift in Sources */,
-			00000000000000000000002A /* RootView.swift in Sources */,
-			00000000000000000000002C /* SafariView.swift in Sources */,
-			00000000000000000000002E /* SettingsView.swift in Sources */,
-			000000000000000000000030 /* SourceBadge.swift in Sources */,
-			000000000000000000000032 /* SwipeCardView.swift in Sources */,
-			000000000000000000000034 /* TopicsView.swift in Sources */,
+			000000000000000000000020 /* ThemeSettings.swift in Sources */,
+			000000000000000000000022 /* FeedViewModel.swift in Sources */,
+			000000000000000000000024 /* OnboardingViewModel.swift in Sources */,
+			000000000000000000000026 /* FeedView.swift in Sources */,
+			000000000000000000000028 /* InterestsView.swift in Sources */,
+			00000000000000000000002A /* OnboardingView.swift in Sources */,
+			00000000000000000000002C /* RootView.swift in Sources */,
+			00000000000000000000002E /* SafariView.swift in Sources */,
+			000000000000000000000030 /* SettingsView.swift in Sources */,
+			000000000000000000000032 /* SourceBadge.swift in Sources */,
+			000000000000000000000034 /* SwipeCardView.swift in Sources */,
+			000000000000000000000036 /* TopicsView.swift in Sources */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		000000000000000000000045 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000047 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -221,7 +225,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			}; name = Debug; };
-		000000000000000000000046 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000048 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -272,12 +276,12 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			}; name = Release; };
-		000000000000000000000047 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000049 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -290,12 +294,12 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			}; name = Debug; };
-		000000000000000000000048 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
+		00000000000000000000004A /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -311,15 +315,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		000000000000000000000043 /* Build configuration list for PBXProject "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
-			000000000000000000000045 /* Debug */,
-			000000000000000000000046 /* Release */,
-		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		000000000000000000000044 /* Build configuration list for PBXNativeTarget "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
+		000000000000000000000045 /* Build configuration list for PBXProject "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
 			000000000000000000000047 /* Debug */,
 			000000000000000000000048 /* Release */,
 		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		000000000000000000000046 /* Build configuration list for PBXNativeTarget "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
+			000000000000000000000049 /* Debug */,
+			00000000000000000000004A /* Release */,
+		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
-	rootObject = 000000000000000000000042 /* Project object */;
+	rootObject = 000000000000000000000044 /* Project object */;
 }

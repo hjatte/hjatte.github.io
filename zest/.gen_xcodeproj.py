@@ -21,6 +21,7 @@ SOURCES = [
     "Zest/Services/RSSClient.swift",
     "Zest/Services/RSSParser.swift",
     "Zest/Services/SourceSettings.swift",
+    "Zest/Services/ThemeSettings.swift",
     "Zest/ViewModels/FeedViewModel.swift",
     "Zest/ViewModels/OnboardingViewModel.swift",
     "Zest/Views/FeedView.swift",
@@ -196,7 +197,7 @@ TARGET_COMMON = """\t\t\t\tASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 \t\t\t\tASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 \t\t\t\tCODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 \t\t\t\tCODE_SIGN_STYLE = Automatic;
-\t\t\t\tCURRENT_PROJECT_VERSION = 3;
+\t\t\t\tCURRENT_PROJECT_VERSION = 4;
 \t\t\t\tDEVELOPMENT_TEAM = "";
 \t\t\t\tENABLE_PREVIEWS = YES;
 \t\t\t\tGENERATE_INFOPLIST_FILE = NO;
