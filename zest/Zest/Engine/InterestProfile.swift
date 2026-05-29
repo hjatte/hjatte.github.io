@@ -1,5 +1,12 @@
 import Foundation
 
+/// A tag paired with its current score, for display and ranking.
+struct TagScore: Identifiable, Hashable {
+    let tag: String
+    let score: Double
+    var id: String { tag }
+}
+
 /// The weight the engine keeps for a single tag (e.g. "politics").
 struct TagWeight: Codable {
     /// Raw score "banked" at `lastUpdated`. The *current* score is this value
@@ -81,9 +88,9 @@ struct InterestProfile: Codable {
     }
 
     /// The strongest interests right now, most-positive first.
-    func topTags(limit: Int = 12, now: Date = .now) -> [(tag: String, score: Double)] {
+    func topTags(limit: Int = 12, now: Date = .now) -> [TagScore] {
         weights.keys
-            .map { (tag: $0, score: effectiveScore($0, asOf: now)) }
+            .map { TagScore(tag: $0, score: effectiveScore($0, asOf: now)) }
             .filter { $0.score > 0 }
             .sorted { $0.score > $1.score }
             .prefix(limit)

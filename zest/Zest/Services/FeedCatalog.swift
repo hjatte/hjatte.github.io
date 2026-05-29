@@ -9,9 +9,9 @@ enum FeedCatalog {
     static let all: [NewsSource] = bbc + guardian + others
 
     /// Sources grouped by category for the Settings UI.
-    static var byCategory: [(category: String, sources: [NewsSource])] {
+    static var byCategory: [CategoryGroup] {
         Dictionary(grouping: all, by: \.category)
-            .map { ($0.key, $0.value.sorted { $0.name < $1.name }) }
+            .map { CategoryGroup(category: $0.key, sources: $0.value.sorted { $0.name < $1.name }) }
             .sorted { $0.category < $1.category }
     }
 

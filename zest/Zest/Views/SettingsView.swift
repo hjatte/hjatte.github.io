@@ -43,7 +43,7 @@ struct SourcesView: View {
 
     var body: some View {
         List {
-            ForEach(FeedCatalog.byCategory, id: \.category) { group in
+            ForEach(FeedCatalog.byCategory) { group in
                 Section(group.category.capitalized) {
                     ForEach(group.sources) { source in
                         Toggle(isOn: Binding(

@@ -28,26 +28,18 @@ same process behind every App Store app, including your existing ones.
 4. In your **Downloads** folder, double-click the ZIP to unzip it. You'll get a
    folder; inside it is a folder called **`zest`**. That's the app.
 
-## Step 3 — Open the project (one click)
+## Step 3 — Open the project (just double-click)
 
-Inside the `zest` folder, find the file **`setup.command`**.
+Inside the `zest` folder, find **`Zest.xcodeproj`** (its icon is a blue Xcode
+blueprint). **Double-click it.** Xcode opens with the whole app loaded. That's it
+— no Terminal, no extra tools.
 
-- **Right-click it → Open** (the first time only — macOS blocks double-clicking
-  downloaded scripts until you approve once). Click **Open** again if asked.
-- A black Terminal window appears and does the setup automatically, then opens
-  the project in Xcode.
+> The first time, Xcode might show a small "trust"/"open" prompt because the
+> project came from the internet — click **Trust** / **Open**.
 
-If it tells you that you need **Homebrew** first: open <https://brew.sh>, copy
-the one install command shown there, paste it into the Terminal window, press
-Return, and when it finishes, Open `setup.command` again.
-
-> Prefer to do it by hand instead of the script? In Terminal:
-> ```
-> brew install xcodegen
-> cd ~/Downloads/<the-unzipped-folder>/zest
-> xcodegen generate
-> open Zest.xcodeproj
-> ```
+> Note: this easy project contains the **app** (everything you swipe and read).
+> The optional Home-Screen **widget** is added in a later step using the advanced
+> setup, once you're comfortable — it isn't needed to try the app.
 
 ## Step 4 — Run it on the pretend iPhone (simulator)
 

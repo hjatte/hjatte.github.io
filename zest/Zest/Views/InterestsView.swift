@@ -7,7 +7,7 @@ struct InterestsView: View {
     @EnvironmentObject private var store: InterestStore
     @State private var confirmingReset = false
 
-    private var top: [(tag: String, score: Double)] {
+    private var top: [TagScore] {
         store.profile.topTags(limit: 18)
     }
 
@@ -23,7 +23,7 @@ struct InterestsView: View {
                 } else {
                     List {
                         Section("What you're into right now") {
-                            Chart(top, id: \.tag) { item in
+                            Chart(top) { item in
                                 BarMark(
                                     x: .value("Score", item.score),
                                     y: .value("Tag", item.tag)

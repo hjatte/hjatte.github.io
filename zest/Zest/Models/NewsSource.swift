@@ -13,3 +13,10 @@ struct NewsSource: Identifiable, Hashable, Codable {
         name.lowercased().split(separator: " ").first.map(String.init) ?? name.lowercased()
     }
 }
+
+/// A category and the sources within it (for the Settings list).
+struct CategoryGroup: Identifiable {
+    let category: String
+    let sources: [NewsSource]
+    var id: String { category }
+}

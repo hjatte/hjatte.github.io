@@ -57,7 +57,7 @@ struct OnboardingView: View {
     private var deck: some View {
         ZStack {
             // Render the top few cards for a stacked look.
-            ForEach(Array(vm.deck.suffix(3).enumerated()), id: \.element.id) { _, article in
+            ForEach(vm.deck.suffix(3)) { article in
                 SwipeCardView(article: article) { liked in
                     vm.swipe(article, liked: liked)
                 }

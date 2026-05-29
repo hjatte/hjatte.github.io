@@ -1,10 +1,9 @@
 # Xcode / build artifacts
-*.xcodeproj
-*.xcworkspace
 xcuserdata/
 DerivedData/
 build/
 .DS_Store
 
-# XcodeGen generates the project from project.yml, so we don't track it.
-# (Delete the line above if you prefer to commit the generated .xcodeproj.)
+# We DO commit Zest.xcodeproj so you can open it without any tools.
+# (If you regenerate it with XcodeGen from project.yml, that's fine too —
+#  it will just overwrite the committed one with the full multi-target setup.)
