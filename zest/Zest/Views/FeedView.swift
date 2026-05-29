@@ -8,6 +8,8 @@ struct FeedView: View {
 
     @State private var reader: ReaderLink?
     @State private var searchText = ""
+    @State private var isRefreshing = false
+    @State private var scrollProxy: ScrollViewProxy?
 
     init(client: NewsAPIClient, pendingURL: Binding<URL?>) {
         _vm = StateObject(wrappedValue: FeedViewModel(client: client, store: InterestStore.shared))
@@ -29,9 +31,23 @@ struct FeedView: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("Your Feed")
                 .navigationBarTitleDisplayMode(.inline)
-                .searchable(text: $searchText, prompt: "Search this feed")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        HStack(spacing: 8) {
+                            Button(action: refreshFromTop) {
+                                LemonSliceIcon()
+                                    .frame(width: 26, height: 26)
+                                    .rotationEffect(.degrees(isRefreshing ? 360 : 0))
+                                    .animation(isRefreshing
+                                               ? .linear(duration: 0.9).repeatForever(autoreverses: false)
+                                               : .default, value: isRefreshing)
+                            }
+                            .accessibilityLabel("Refresh")
+                            Text("Zesty News").font(.headline.weight(.bold))
+                        }
+                    }
+                }
         }
         .task { await vm.loadIfNeeded() }
         // Open a story the widget asked for.
@@ -88,29 +104,44 @@ struct FeedView: View {
     }
 
     private var list: some View {
-        List(feedItems) { item in
-            switch item {
-            case .article(let article):
-                Button {
-                    open(article)
-                } label: {
-                    ArticleRow(article: article,
-                               isPinned: article.tags.contains(where: store.pinnedTags.contains))
+        ScrollViewReader { proxy in
+            List(feedItems) { item in
+                switch item {
+                case .article(let article):
+                    Button {
+                        open(article)
+                    } label: {
+                        ArticleRow(article: article,
+                                   isPinned: article.tags.contains(where: store.pinnedTags.contains))
+                    }
+                    .buttonStyle(.plain)
+                    .onAppear { store.markShown(article) }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            store.record(.hideArticle, for: article)
+                            vm.reorder()
+                        } label: { Label("Less", systemImage: "hand.thumbsdown") }
+                    }
+                case .ad:
+                    NativeAdSlot()
                 }
-                .buttonStyle(.plain)
-                .onAppear { store.markShown(article) }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        store.record(.hideArticle, for: article)
-                        vm.reorder()
-                    } label: { Label("Less", systemImage: "hand.thumbsdown") }
-                }
-            case .ad:
-                NativeAdSlot()
             }
+            .listStyle(.plain)
+            .refreshable { await vm.refresh() }
+            .onAppear { scrollProxy = proxy }
         }
-        .listStyle(.plain)
-        .refreshable { await vm.refresh() }
+    }
+
+    /// Tapping the lemon: jump to the top, then refresh (with the icon spinning).
+    private func refreshFromTop() {
+        Task {
+            isRefreshing = true
+            if let first = vm.articles.first?.id {
+                withAnimation { scrollProxy?.scrollTo(first, anchor: .top) }
+            }
+            await vm.refresh()
+            isRefreshing = false
+        }
     }
 
     private func open(_ article: Article) {
@@ -178,5 +209,37 @@ struct ArticleRow: View {
             }
         }
         .padding(.vertical, 8)
+    }
+}
+
+/// A small lemon-slice mark (matches the app icon) used as the feed's refresh button.
+struct LemonSliceIcon: View {
+    var body: some View {
+        Canvas { ctx, size in
+            let d = min(size.width, size.height)
+            let r = d / 2
+            let c = CGPoint(x: size.width / 2, y: size.height / 2)
+            let rind = Color(red: 0.97, green: 0.79, blue: 0.18)
+            let flesh = Color(red: 1.0, green: 0.92, blue: 0.55)
+
+            ctx.fill(Circle().path(in: CGRect(x: c.x - r, y: c.y - r, width: d, height: d)),
+                     with: .color(rind))
+            let fr = r * 0.74
+            ctx.fill(Circle().path(in: CGRect(x: c.x - fr, y: c.y - fr, width: fr * 2, height: fr * 2)),
+                     with: .color(flesh))
+
+            var segments = Path()
+            let count = 8
+            for i in 0..<count {
+                let angle = Double(i) / Double(count) * 2 * .pi
+                segments.move(to: c)
+                segments.addLine(to: CGPoint(x: c.x + CGFloat(cos(angle)) * fr,
+                                             y: c.y + CGFloat(sin(angle)) * fr))
+            }
+            ctx.stroke(segments, with: .color(.white), lineWidth: max(1, r * 0.13))
+            ctx.fill(Circle().path(in: CGRect(x: c.x - r * 0.12, y: c.y - r * 0.12,
+                                              width: r * 0.24, height: r * 0.24)),
+                     with: .color(.white))
+        }
     }
 }

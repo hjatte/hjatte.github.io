@@ -51,6 +51,15 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
 
         let js = readabilityJS + """
         ;(function(){ try {
+          // Restore lazy-loaded image URLs so they survive into the reader.
+          document.querySelectorAll('img').forEach(function(img){
+            var ds = img.getAttribute('data-src') || img.getAttribute('data-original')
+                  || img.getAttribute('data-lazy-src') || img.getAttribute('data-srcset');
+            if (ds) { img.setAttribute('src', ds.split(',')[0].trim().split(' ')[0]); }
+            else if (img.getAttribute('srcset')) {
+              img.setAttribute('src', img.getAttribute('srcset').split(',')[0].trim().split(' ')[0]);
+            }
+          });
           var a = new Readability(document.cloneNode(true)).parse();
           return a ? JSON.stringify({title:a.title||'', byline:a.byline||'', content:a.content||''}) : '';
         } catch (e) { return ''; } })();
@@ -87,12 +96,12 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <style>
           :root { color-scheme: \(dark ? "dark" : "light"); }
+          * { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; }
           body { margin: 0; padding: 20px max(20px, env(safe-area-inset-left)) 120px; background: \(bg); color: \(fg);
-                 font: -apple-system-body, -apple-system, system-ui, sans-serif; font-size: 19px; line-height: 1.6;
-                 -webkit-text-size-adjust: 100%; }
-          h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; }
+                 font-size: 18px; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+          h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; font-weight: 700; }
           .byline { color: \(muted); font-size: 15px; margin: 0 0 20px; }
-          img, figure, video { max-width: 100%; height: auto; border-radius: 10px; margin: 14px 0; }
+          img, figure, video { max-width: 100%; height: auto; border-radius: 10px; margin: 14px 0; display: block; }
           figure { margin-inline: 0; } figcaption { color: \(muted); font-size: 14px; }
           a { color: \(accent); }
           p { margin: 0 0 16px; } pre { white-space: pre-wrap; }
@@ -131,7 +140,7 @@ struct ArticleReaderView: View {
             if model.isLoading { ProgressView().controlSize(.large) }
 
             HStack {
-                control("xmark") { dismiss() }
+                control("chevron.left") { dismiss() }
                 Spacer()
                 control(readerMode ? "globe" : "doc.plaintext") {
                     readerMode.toggle()
