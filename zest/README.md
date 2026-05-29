@@ -1,8 +1,11 @@
 # Zest — a personalised news app for iPhone & iPad
 
 A SwiftUI universal app (iOS 17+) that learns what you like and builds you a
-personalised, scrollable news feed from **real** news — plus a Home Screen
-widget showing your top stories.
+personalised, scrollable news feed by aggregating **free, open RSS feeds from
+many publishers** (BBC, The Guardian, NPR, Al Jazeera, Sky News, The Verge,
+TechCrunch, Ars Technica…) — plus a Home Screen widget showing your top stories.
+
+No API key, no account, no per-user setup: it works for everyone out of the box.
 
 It's the idea you described: a Google-app-style feed, a Tinder-style swipe deck
 to learn your taste, a weighted interest model that goes **up when you click**
@@ -35,7 +38,8 @@ Everything else you asked for is here and works.
 | Ever-changing algorithm | Exponential **time-decay** (adjustable half-life) continuously fades scores |
 | Things fade if shown but never clicked | **Impression penalty** nudges ignored topics down; `prune()` drops dead ones |
 | Scrollable widget on the left Home Screen | Widget shows top stories in Today View (can't scroll — see note above) |
-| Real news via an API | The Guardian Open Platform (swappable — see *Swapping the news source*) |
+| Multiple news sources, free, for everyone | `RSSClient` aggregates ~25 free RSS/Atom feeds; no key, dead feeds skipped |
+| Choose your sources | Settings → News sources lets anyone toggle publishers on/off |
 
 ---
 
@@ -44,20 +48,24 @@ Everything else you asked for is here and works.
 ```
 zest/
 ├─ project.yml              # XcodeGen spec — generates Zest.xcodeproj
-├─ Configs/Secrets.xcconfig # your Guardian API key (kept out of commits)
 ├─ Shared/                  # code compiled into BOTH app and widget
 │  ├─ Store/AppGroup.swift      # App Group id + URL scheme
 │  ├─ Store/SharedStore.swift   # app ↔ widget data hand-off
 │  └─ Models/WidgetHeadline.swift
 ├─ Zest/                    # the app
 │  ├─ App/                  # @main, Info.plist, entitlements, privacy manifest
-│  ├─ Models/Article.swift
+│  ├─ Models/Article.swift, NewsSource.swift
 │  ├─ Engine/               # ⭐ the learning algorithm
 │  │  ├─ InterestProfile.swift  # weights + decay + impression fade + prune
 │  │  ├─ InterestStore.swift    # persistence + single source of truth
 │  │  ├─ InteractionEvent.swift # point deltas (+10 on click, etc.)
 │  │  └─ FeedRanker.swift       # scores & orders the feed
-│  ├─ Services/             # GuardianClient + pluggable NewsAPIClient
+│  ├─ Services/             # ⭐ the multi-source news layer
+│  │  ├─ NewsAPIClient.swift    # pluggable provider protocol
+│  │  ├─ RSSClient.swift        # aggregates many feeds, resilient to failures
+│  │  ├─ RSSParser.swift        # RSS 2.0 + Atom parser (Foundation XMLParser)
+│  │  ├─ FeedCatalog.swift      # the built-in list of free feeds
+│  │  └─ SourceSettings.swift   # which sources are switched on
 │  ├─ ViewModels/
 │  └─ Views/                # Feed, Onboarding/Swipe, Interests, Settings
 ├─ ZestWidget/             # WidgetKit extension
@@ -81,15 +89,10 @@ xcodegen generate
 open Zest.xcodeproj
 ```
 
-### 2. Add your free Guardian API key
-Get one in ~1 minute at <https://open-platform.theguardian.com/access/>, then:
-
-```bash
-# edit zest/Configs/Secrets.xcconfig and paste your key after the "="
-git update-index --skip-worktree zest/Configs/Secrets.xcconfig   # don't commit it
-```
-
-(You can also just type the key into the app's **Settings** tab at runtime.)
+### 2. (Nothing to configure for news)
+There's no API key or account. Zest pulls free RSS feeds, so it works
+immediately. Users can toggle which publishers to include in **Settings →
+News sources**.
 
 ### 3. Set signing + the App Group
 In Xcode, for **both** the `Zest` and `ZestWidgetExtension` targets:
@@ -111,9 +114,10 @@ Screen → add the **Zest** widget to your Today View / Home Screen.
 
 The whole "brain" is in `Zest/Engine/`. In plain terms:
 
-1. **Tagging.** Every article is reduced to interest tokens from its Guardian
-   section + tags. A UK-politics story becomes `["uk", "politics", "news", …]`
-   — so "uk" and "politics" are tracked separately, exactly like your example.
+1. **Tagging.** Every article is reduced to interest tokens from its feed
+   category, the publisher, and any `<category>` tags in the feed item. A UK
+   politics story becomes `["uk", "politics", "news", …]` — so "uk" and
+   "politics" are tracked separately, exactly like your example.
 
 2. **Scoring.** Each tag has a score. Interactions move it:
    - open/click an article → **+10** to each tag (strongest signal)
@@ -137,23 +141,27 @@ Run the unit tests (`⌘U`, the `ZestTests` target) to see all of this verified.
 
 ---
 
-## Swapping the news source
+## Adding / changing sources
 
-`NewsAPIClient` is a protocol. `GuardianClient` is the default implementation.
-To use NewsAPI / GNews / your own backend, write a new type conforming to
-`NewsAPIClient` and change one line in `ZestApp.swift`:
+- **Add a feed:** drop another `source(...)` line into `FeedCatalog.swift`.
+  That's it — it shows up in Settings and the aggregator picks it up.
+- **Different provider entirely:** `NewsAPIClient` is a protocol and `RSSClient`
+  is the default. Write another conformer (a JSON API, your own backend, etc.)
+  and change one line in `ZestApp.swift`:
 
 ```swift
-private let client: NewsAPIClient = GuardianClient()   // ← swap me
+private let client: NewsAPIClient = RSSClient()   // ← swap me
 ```
 
 ---
 
 ## Before you ship to the App Store
 
-- **News licensing.** The Guardian Open Platform's free tier is intended for
-  non-commercial use. Commercial/App Store distribution may require their
-  commercial tier or a different provider — check their terms before publishing.
+- **Feed terms & attribution.** RSS feeds are free to read, but each publisher
+  has its own terms; most expect you to link back to the original article
+  (Zest does — tapping a story opens the publisher's page). Review each
+  publisher's RSS/terms before a commercial release, and consider showing the
+  source name prominently (Zest shows it as the article's section/pillar).
 - **App Icon.** The asset catalog has a placeholder `AppIcon` slot; drop in a
   1024×1024 icon.
 - **Privacy manifest.** `PrivacyInfo.xcprivacy` is included (declares no

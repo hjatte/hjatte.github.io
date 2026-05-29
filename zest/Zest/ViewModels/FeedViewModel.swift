@@ -23,7 +23,6 @@ final class FeedViewModel: ObservableObject {
     }
 
     func refresh() async {
-        guard APIConfig.hasKey else { state = .failed(NewsAPIError.missingKey.localizedDescription); return }
         state = .loading
         do {
             let interests = store.profile.topTags(limit: 8).map(\.tag)

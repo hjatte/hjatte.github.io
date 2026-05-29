@@ -4,8 +4,9 @@ import SwiftUI
 struct ZestApp: App {
     @StateObject private var store = InterestStore.shared
 
-    /// Swap this line to use a different news provider.
-    private let client: NewsAPIClient = GuardianClient()
+    /// Aggregates many free, no-key RSS sources. Swap for another
+    /// `NewsAPIClient` to change providers.
+    private let client: NewsAPIClient = RSSClient()
 
     var body: some Scene {
         WindowGroup {

@@ -12,15 +12,17 @@ protocol NewsAPIClient {
 }
 
 enum NewsAPIError: LocalizedError {
-    case missingKey
+    case noSources
+    case allSourcesFailed
     case badResponse(Int)
     case decoding(Error)
 
     var errorDescription: String? {
         switch self {
-        case .missingKey:        return "No API key set. Add your Guardian key in Settings."
-        case .badResponse(let c): return "The news service returned an error (HTTP \(c))."
-        case .decoding:          return "Couldn't read the news response."
+        case .noSources:        return "No sources selected. Turn some on in Settings."
+        case .allSourcesFailed: return "Couldn't reach any news sources. Check your connection and try again."
+        case .badResponse(let c): return "A news source returned an error (HTTP \(c))."
+        case .decoding:         return "Couldn't read the news response."
         }
     }
 }

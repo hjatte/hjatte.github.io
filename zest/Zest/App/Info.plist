@@ -9,10 +9,6 @@
     <key>CFBundleVersion</key>
     <string>$(CURRENT_PROJECT_VERSION)</string>
 
-    <!-- Guardian API key, injected from Configs/Secrets.xcconfig at build time. -->
-    <key>GuardianAPIKey</key>
-    <string>$(GUARDIAN_API_KEY)</string>
-
     <!-- Deep-link scheme used by the widget: zest://article?u=<url> -->
     <key>CFBundleURLTypes</key>
     <array>

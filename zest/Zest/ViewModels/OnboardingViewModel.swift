@@ -23,7 +23,6 @@ final class OnboardingViewModel: ObservableObject {
     var topCard: Article? { deck.last }
 
     func load() async {
-        guard APIConfig.hasKey else { state = .failed(NewsAPIError.missingKey.localizedDescription); return }
         state = .loading
         do {
             deck = try await client.fetchTuningDeck()

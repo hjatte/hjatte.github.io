@@ -16,12 +16,6 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
 
-# Pulls GUARDIAN_API_KEY into the build. Copy Configs/Secrets.example.xcconfig
-# to Configs/Secrets.xcconfig and paste your key there (see README).
-configFiles:
-  Debug: Configs/Secrets.xcconfig
-  Release: Configs/Secrets.xcconfig
-
 targets:
   Zest:
     type: application
