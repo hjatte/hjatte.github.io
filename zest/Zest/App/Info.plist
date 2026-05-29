@@ -21,6 +21,11 @@
     <key>CFBundleVersion</key>
     <string>$(CURRENT_PROJECT_VERSION)</string>
 
+    <!-- We only use standard HTTPS, so no special export compliance is needed.
+         This stops App Store Connect asking about encryption on every upload. -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
     <!-- Deep-link scheme used by the widget: zest://article?u=<url> -->
     <key>CFBundleURLTypes</key>
     <array>
