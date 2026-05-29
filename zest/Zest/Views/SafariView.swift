@@ -1,5 +1,5 @@
 import SwiftUI
-import WebKit
+import SafariServices
 
 /// Lets a `URL` drive `.fullScreenCover(item:)` / `.sheet(item:)`.
 struct ReaderLink: Identifiable {
@@ -7,80 +7,36 @@ struct ReaderLink: Identifiable {
     var id: String { url.absoluteString }
 }
 
-/// In-app article reader: a full-screen web view with our own floating controls
-/// — a Back button (bottom-left, returns to the feed) and a Share button
-/// (bottom-right).
-struct ArticleReaderView: View {
+/// In-app reader using Apple's Safari view: opens articles in **Reader mode**
+/// automatically (clean, ad-free text) when the page supports it. Has a Done
+/// button (returns to the app) and Share built in, and its own top bar so the
+/// status bar / clock stays readable.
+struct SafariView: UIViewControllerRepresentable {
     let url: URL
     @Environment(\.dismiss) private var dismiss
-    @State private var isLoading = true
 
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            WebView(url: url, isLoading: $isLoading)
-                .ignoresSafeArea()
+    func makeCoordinator() -> Coordinator { Coordinator(dismiss: dismiss) }
 
-            if isLoading {
-                ProgressView()
-                    .controlSize(.large)
-            }
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let config = SFSafariViewController.Configuration()
+        config.entersReaderIfAvailable = true            // ← automatic Reader mode
+        config.barCollapsingEnabled = true
 
-            HStack {
-                control(systemName: "chevron.left") { dismiss() }
-                Spacer()
-                ShareLink(item: url) {
-                    controlLabel(systemName: "square.and.arrow.up")
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 6)
-        }
+        let controller = SFSafariViewController(url: url, configuration: config)
+        controller.dismissButtonStyle = .done
+        controller.preferredControlTintColor = UIColor(ThemeSettings.shared.flavour.accent)
+        controller.delegate = context.coordinator
+        return controller
     }
 
-    private func control(systemName: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) { controlLabel(systemName: systemName) }
-    }
+    func updateUIViewController(_ controller: SFSafariViewController, context: Context) {}
 
-    private func controlLabel(systemName: String) -> some View {
-        Image(systemName: systemName)
-            .font(.title3.weight(.semibold))
-            .foregroundStyle(.tint)
-            .frame(width: 54, height: 54)
-            .background(.ultraThinMaterial, in: Circle())
-            .overlay(Circle().strokeBorder(.quaternary))
-            .shadow(radius: 6, y: 3)
-    }
-}
+    final class Coordinator: NSObject, SFSafariViewControllerDelegate {
+        private let dismiss: DismissAction
+        init(dismiss: DismissAction) { self.dismiss = dismiss }
 
-/// Minimal `WKWebView` wrapper that reports its loading state.
-struct WebView: UIViewRepresentable {
-    let url: URL
-    @Binding var isLoading: Bool
-
-    func makeCoordinator() -> Coordinator { Coordinator(self) }
-
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.navigationDelegate = context.coordinator
-        webView.allowsBackForwardNavigationGestures = true
-        webView.load(URLRequest(url: url))
-        return webView
-    }
-
-    func updateUIView(_ webView: WKWebView, context: Context) {}
-
-    final class Coordinator: NSObject, WKNavigationDelegate {
-        let parent: WebView
-        init(_ parent: WebView) { self.parent = parent }
-
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            parent.isLoading = false
-        }
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            parent.isLoading = false
-        }
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            parent.isLoading = false
+        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+            dismiss()
         }
     }
 }
