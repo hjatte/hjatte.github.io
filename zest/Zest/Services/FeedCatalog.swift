@@ -6,7 +6,7 @@ import Foundation
 /// everyone out of the box. If a feed ever goes away it's simply skipped at
 /// fetch time — it never breaks the rest of the app.
 enum FeedCatalog {
-    static let all: [NewsSource] = bbc + guardian + others
+    static let all: [NewsSource] = bbc + guardian + others + more
 
     /// Sources grouped by category for the Settings UI.
     static var byCategory: [CategoryGroup] {
@@ -66,5 +66,51 @@ enum FeedCatalog {
         source("nature", "Nature", "science", "https://www.nature.com/nature.rss"),
         source("espn", "ESPN", "sport", "https://www.espn.com/espn/rss/news"),
         source("polygon", "Polygon", "games", "https://www.polygon.com/rss/index.xml")
+    ]
+
+    // MARK: More sources (added on request — failing feeds are skipped at runtime)
+
+    private static let more: [NewsSource] = [
+        source("sciencenews", "Science News", "science", "https://www.sciencenews.org/feed"),
+        source("appleinsider", "AppleInsider", "technology", "https://appleinsider.com/rss/news/"),
+        source("bloomberg", "Bloomberg", "business", "https://feeds.bloomberg.com/markets/news.rss"),
+        source("euronews", "Euronews", "world", "https://www.euronews.com/rss"),
+        source("independent", "The Independent", "world", "https://www.independent.co.uk/news/world/rss"),
+        source("macworld", "Macworld", "technology", "https://www.macworld.com/feed"),
+        source("esquire", "Esquire", "culture", "https://www.esquire.com/rss/all.xml/"),
+        source("dw", "DW News", "world", "https://rss.dw.com/rdf/rss-en-all"),
+        source("techradar", "TechRadar", "technology", "https://www.techradar.com/rss"),
+        source("wsj", "Wall Street Journal", "business", "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml"),
+        source("toi", "Times of India", "world", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"),
+        source("physorg", "Phys.org", "science", "https://phys.org/rss-feed/"),
+        source("spacedaily", "Space Daily", "science", "https://www.spacedaily.com/spacedaily.xml"),
+        source("fortune", "Fortune", "business", "https://fortune.com/feed/"),
+        source("zdnet", "ZDNet", "technology", "https://www.zdnet.com/news/rss.xml"),
+        source("tomsguide", "Tom's Guide", "technology", "https://www.tomsguide.com/feeds/all"),
+        source("verywell", "Verywell Health", "health", "https://www.verywellhealth.com/feed"),
+        source("economist", "The Economist", "world", "https://www.economist.com/latest/rss.xml"),
+        source("vogue", "Vogue", "fashion", "https://www.vogue.com/feed/rss"),
+        source("cnbc", "CNBC", "business", "https://www.cnbc.com/id/100003114/device/rss/rss.html"),
+        source("time", "TIME", "world", "https://time.com/feed/"),
+        source("bof", "Business of Fashion", "fashion", "https://www.businessoffashion.com/feed/"),
+        source("xda", "XDA", "technology", "https://www.xda-developers.com/feed/"),
+        source("scitechdaily", "SciTechDaily", "science", "https://scitechdaily.com/feed/"),
+        source("politicoeu", "Politico Europe", "politics", "https://www.politico.eu/feed/"),
+        source("globaltimes", "Global Times", "world", "https://www.globaltimes.cn/rss/outbrain.xml"),
+        source("9to5mac", "9to5Mac", "technology", "https://9to5mac.com/feed/"),
+        source("standard", "Evening Standard", "world", "https://www.standard.co.uk/news/rss"),
+        source("goodhousekeeping", "Good Housekeeping", "lifestyle", "https://www.goodhousekeeping.com/rss/all.xml/"),
+        source("digitaltrends", "Digital Trends", "technology", "https://www.digitaltrends.com/feed/"),
+        source("investinglive", "InvestingLive", "business", "https://www.investinglive.com/feed"),
+        source("elpais", "El País", "world", "https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada"),
+        source("fragrantica", "Fragrantica", "lifestyle", "https://www.fragrantica.com/rss/news.xml"),
+        source("scmp", "South China Morning Post", "world", "https://www.scmp.com/rss/91/feed"),
+        source("itv", "ITV News", "world", "https://www.itv.com/news/index.rss"),
+        source("register", "The Register", "technology", "https://www.theregister.com/headlines.atom"),
+        source("france24", "France 24", "world", "https://www.france24.com/en/rss"),
+        source("abcnews", "ABC News", "world", "https://abcnews.go.com/abcnews/topstories"),
+        source("nbcnews", "NBC News", "world", "https://feeds.nbcnews.com/nbcnews/public/news"),
+        source("cbsnews", "CBS News", "world", "https://www.cbsnews.com/latest/rss/main"),
+        source("atlantic", "The Atlantic", "culture", "https://www.theatlantic.com/feed/all/")
     ]
 }

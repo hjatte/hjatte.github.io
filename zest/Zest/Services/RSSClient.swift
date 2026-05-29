@@ -6,7 +6,8 @@ import Foundation
 struct RSSClient: NewsAPIClient {
     private let session: URLSession
     private let sources: @Sendable () -> [NewsSource]
-    private let maxItemsPerFeed = 25
+    private let maxItemsPerFeed = 12
+    private let maxConcurrent = 10
 
     /// `sources` is a closure so the live set of enabled sources is read fresh
     /// on every fetch (the user can toggle them in Settings).
@@ -34,10 +35,19 @@ struct RSSClient: NewsAPIClient {
 
         var all: [Article] = []
         await withTaskGroup(of: [Article].self) { group in
-            for source in sources {
-                group.addTask { await self.fetchOne(source) }
+            var iterator = sources.makeIterator()
+            // Keep at most `maxConcurrent` feed fetches in flight at once.
+            for _ in 0..<min(maxConcurrent, sources.count) {
+                if let source = iterator.next() {
+                    group.addTask { await self.fetchOne(source) }
+                }
             }
-            for await batch in group { all.append(contentsOf: batch) }
+            for await batch in group {
+                all.append(contentsOf: batch)
+                if let source = iterator.next() {
+                    group.addTask { await self.fetchOne(source) }
+                }
+            }
         }
 
         guard !all.isEmpty else { throw NewsAPIError.allSourcesFailed }
