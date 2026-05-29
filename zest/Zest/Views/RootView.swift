@@ -52,9 +52,6 @@ struct MainTabView: View {
             TopicsView()
                 .tabItem { Label("Topics", systemImage: "pin") }
 
-            OnboardingView(client: client, isFirstRun: false, onFinish: {})
-                .tabItem { Label("Tune", systemImage: "slider.horizontal.3") }
-
             InterestsView()
                 .tabItem { Label("Interests", systemImage: "chart.bar") }
 

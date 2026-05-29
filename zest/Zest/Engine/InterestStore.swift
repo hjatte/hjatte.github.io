@@ -7,6 +7,7 @@ private struct PersistedState: Codable {
     var profile: InterestProfile
     var seen: [String]
     var pinned: [String]
+    var shown: [String]?     // optional so older saved data still decodes
     var updatedAt: Date
 }
 
@@ -19,8 +20,11 @@ final class InterestStore: ObservableObject {
     static let shared = InterestStore()
 
     @Published private(set) var profile: InterestProfile
-    @Published private(set) var seenIDs: Set<String>
+    @Published private(set) var seenIDs: Set<String>      // articles you opened/read
     @Published private(set) var pinnedTags: Set<String>
+    /// Articles that scrolled into view (but weren't opened). Excluded from
+    /// future feeds unless they very strongly match your interests.
+    private(set) var shownIDs: Set<String> = []
 
     private let defaults = AppGroup.defaults
     private let cloud = NSUbiquitousKeyValueStore.default
@@ -74,6 +78,19 @@ final class InterestStore: ObservableObject {
         if seenIDs.count > 2_000 { seenIDs = Set(seenIDs.prefix(1_500)) }
     }
 
+    /// Records that an article scrolled into view. Persisted locally only (no
+    /// iCloud round-trip) since this fires often during scrolling.
+    func markShown(_ article: Article) {
+        guard shownIDs.insert(article.id).inserted else { return }
+        if shownIDs.count > 2_000 { shownIDs = Set(shownIDs.prefix(1_500)) }
+        persist(syncCloud: false)
+    }
+
+    /// How strongly an article matches the current interest profile.
+    func interestScore(for article: Article) -> Double {
+        article.tags.reduce(0) { $0 + profile.effectiveScore($1) }
+    }
+
     func setHalfLife(_ days: Double) {
         profile.halfLifeDays = max(1, days)
         persist()
@@ -107,6 +124,7 @@ final class InterestStore: ObservableObject {
         profile = InterestProfile()
         seenIDs = []
         pinnedTags = []
+        shownIDs = []
         persist()
     }
 
@@ -128,14 +146,17 @@ final class InterestStore: ObservableObject {
 
     // MARK: Persistence + sync
 
-    private func persist() {
+    private func persist(syncCloud: Bool = true) {
         lastUpdatedAt = Date()
         let state = PersistedState(profile: profile, seen: Array(seenIDs),
-                                   pinned: Array(pinnedTags), updatedAt: lastUpdatedAt)
+                                   pinned: Array(pinnedTags), shown: Array(shownIDs),
+                                   updatedAt: lastUpdatedAt)
         guard let data = try? JSONEncoder.shared.encode(state) else { return }
         defaults.set(data, forKey: stateKey)   // local: always the source of truth
-        cloud.set(data, forKey: stateKey)       // mirror to iCloud
-        _ = cloud.synchronize()
+        if syncCloud {
+            cloud.set(data, forKey: stateKey)   // mirror to iCloud
+            _ = cloud.synchronize()
+        }
     }
 
     private func saveLocalOnly(_ state: PersistedState) {
@@ -148,6 +169,7 @@ final class InterestStore: ObservableObject {
         profile = state.profile
         seenIDs = Set(state.seen)
         pinnedTags = Set(state.pinned)
+        shownIDs = Set(state.shown ?? [])
         lastUpdatedAt = state.updatedAt
     }
 

@@ -32,11 +32,6 @@ struct FeedView: View {
                 .navigationTitle("Your Feed")
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(text: $searchText, prompt: "Search this feed")
-                .toolbar {
-                    Button { Task { await vm.refresh() } } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
         }
         .task { await vm.loadIfNeeded() }
         // Open a story the widget asked for.
@@ -103,6 +98,7 @@ struct FeedView: View {
                                isPinned: article.tags.contains(where: store.pinnedTags.contains))
                 }
                 .buttonStyle(.plain)
+                .onAppear { store.markShown(article) }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         store.record(.hideArticle, for: article)
@@ -151,34 +147,36 @@ struct ArticleRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
-                    SourceBadge(source: article.pillar ?? article.section.capitalized,
-                                category: article.section,
-                                domain: URL(string: article.url)?.host)
-                    if isPinned {
-                        Image(systemName: "pin.fill")
-                            .font(.caption2).foregroundStyle(.tint)
-                    }
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                SourceBadge(source: article.pillar ?? article.section.capitalized,
+                            category: article.section,
+                            domain: URL(string: article.url)?.host)
+                if isPinned {
+                    Image(systemName: "pin.fill").font(.caption2).foregroundStyle(.tint)
                 }
-                Text(article.title).font(.headline).lineLimit(3)
-                if let trail = article.trailText {
-                    Text(trail).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
-                }
-                if !displayTags.isEmpty {
-                    TagChips(tags: displayTags)
-                }
+                Spacer()
                 Text(article.publishedAt, format: .relative(presentation: .named))
                     .font(.caption2).foregroundStyle(.tertiary)
             }
+
             if let urlString = article.thumbnailURL, let url = URL(string: urlString) {
                 AsyncImage(url: url) { $0.resizable().scaledToFill() } placeholder: {
                     Rectangle().fill(.quaternary)
                 }
-                .frame(width: 88, height: 88).clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: .infinity).frame(height: 190)
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+
+            Text(article.title).font(.title3.weight(.semibold)).lineLimit(3)
+            if let trail = article.trailText {
+                Text(trail).font(.subheadline).foregroundStyle(.secondary).lineLimit(4)
+            }
+            if !displayTags.isEmpty {
+                TagChips(tags: displayTags)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
     }
 }

@@ -18,6 +18,9 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
     private let readabilityJS: String
     /// True while we still need to extract reader content from the loaded page.
     private var pendingExtraction = false
+    /// Reader light/dark, defaulting to the app flavour; toggled by the user.
+    var dark: Bool = ThemeSettings.shared.flavour.dark
+    private var lastExtracted: (title: String, byline: String, content: String)?
 
     init(url: URL) {
         self.url = url
@@ -34,6 +37,15 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
     func showReader() { pendingExtraction = true;  isLoading = true; webView.load(URLRequest(url: url)) }
     func showWeb()    { pendingExtraction = false; isLoading = true; webView.load(URLRequest(url: url)) }
 
+    /// Flip reader light/dark and re-render the already-extracted article.
+    func toggleDark() {
+        dark.toggle()
+        if let a = lastExtracted {
+            webView.loadHTMLString(styledHTML(title: a.title, byline: a.byline, content: a.content),
+                                   baseURL: url)
+        }
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         guard pendingExtraction, !readabilityJS.isEmpty else { isLoading = false; return }
 
@@ -49,11 +61,11 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
             if let json = result as? String, let data = json.data(using: .utf8),
                let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let content = obj["content"] as? String, !content.isEmpty {
-                webView.loadHTMLString(
-                    self.styledHTML(title: obj["title"] as? String ?? "",
-                                    byline: obj["byline"] as? String ?? "",
-                                    content: content),
-                    baseURL: self.url)
+                let title = obj["title"] as? String ?? ""
+                let byline = obj["byline"] as? String ?? ""
+                self.lastExtracted = (title, byline, content)
+                webView.loadHTMLString(self.styledHTML(title: title, byline: byline, content: content),
+                                       baseURL: self.url)
             } else {
                 self.isLoading = false   // extraction failed → leave the plain page
             }
@@ -64,12 +76,11 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { isLoading = false }
 
     private func styledHTML(title: String, byline: String, content: String) -> String {
-        let flavour = ThemeSettings.shared.flavour
-        let dark = flavour.dark
-        let bg = dark ? "#121212" : "#ffffff"
-        let fg = dark ? "#f2f2f2" : "#1a1a1a"
-        let muted = dark ? "#9a9a9a" : "#6a6a6a"
-        let accent = Self.hex(flavour.accent)
+        let isDark = dark
+        let bg = isDark ? "#121212" : "#ffffff"
+        let fg = isDark ? "#f2f2f2" : "#1a1a1a"
+        let muted = isDark ? "#9a9a9a" : "#6a6a6a"
+        let accent = Self.hex(ThemeSettings.shared.flavour.accent)
         let bylineHTML = byline.isEmpty ? "" : "<p class='byline'>\(byline)</p>"
         return """
         <!doctype html><html><head>
@@ -127,9 +138,11 @@ struct ArticleReaderView: View {
                     readerMode ? model.showReader() : model.showWeb()
                 }
                 Spacer()
+                control("circle.lefthalf.filled") { model.toggleDark() }
+                Spacer()
                 ShareLink(item: url) { controlLabel("square.and.arrow.up") }
             }
-            .padding(.horizontal, 28)
+            .padding(.horizontal, 22)
             .padding(.bottom, 6)
         }
         .task { model.showReader() }

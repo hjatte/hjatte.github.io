@@ -42,11 +42,12 @@ final class FeedViewModel: ObservableObject {
             let fetched = try await client.fetchFeed(interests: interests)
 
             // Merge fresh stories with the relevant ones we already had, drop
-            // anything you've already read, de-dupe, and rank by relevance.
+            // anything read or already scrolled past (unless it strongly matches),
+            // de-dupe, and rank by relevance.
             let pool = dedupe(loadCache() + fetched)
-            let unread = unreadOnly(pool)
+            let fresh = pool.filter(isFresh)
             let ranked = Array(
-                FeedRanker.rank(unread, profile: store.profile,
+                FeedRanker.rank(fresh, profile: store.profile,
                                 seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
                     .prefix(maxFeed)
             )
@@ -76,9 +77,20 @@ final class FeedViewModel: ObservableObject {
 
     // MARK: Helpers
 
-    /// Removes articles the user has already opened, so the feed is always fresh.
+    /// For the instant cache view: just hide what you've already read.
     private func unreadOnly(_ list: [Article]) -> [Article] {
         list.filter { !store.seenIDs.contains($0.id) }
+    }
+
+    /// For refreshes: hide read articles, and hide ones you scrolled past before
+    /// unless they *really* strongly match your interests (or a pinned topic).
+    private func isFresh(_ article: Article) -> Bool {
+        if store.seenIDs.contains(article.id) { return false }
+        if store.shownIDs.contains(article.id) {
+            let pinned = store.pinnedTags.contains(where: article.tags.contains)
+            return pinned || store.interestScore(for: article) >= 60
+        }
+        return true
     }
 
     private func dedupe(_ list: [Article]) -> [Article] {
