@@ -6,6 +6,7 @@ struct RootView: View {
     let client: NewsAPIClient
 
     @EnvironmentObject private var store: InterestStore
+    @StateObject private var theme = ThemeSettings.shared
     @AppStorage("hasOnboarded") private var hasOnboarded = false
 
     /// A URL the widget asked us to open, surfaced once the feed is up.
@@ -21,6 +22,8 @@ struct RootView: View {
                 }
             }
         }
+        .tint(theme.accent.color)
+        .preferredColorScheme(theme.appearance.colorScheme)
         .onOpenURL { url in
             // zest://article?u=<percent-encoded-web-url>
             if url.scheme == AppGroup.urlScheme,

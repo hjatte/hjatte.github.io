@@ -2,10 +2,35 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var sources = SourceSettings.shared
+    @StateObject private var theme = ThemeSettings.shared
 
     var body: some View {
         NavigationStack {
             Form {
+                Section("Appearance") {
+                    Picker("Theme", selection: $theme.appearance) {
+                        ForEach(AppAppearance.allCases) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Accent colour").font(.subheadline)
+                        HStack(spacing: 14) {
+                            ForEach(AccentTheme.allCases) { option in
+                                Circle()
+                                    .fill(option.color)
+                                    .frame(width: 30, height: 30)
+                                    .overlay(
+                                        Circle().strokeBorder(.primary, lineWidth: theme.accent == option ? 3 : 0)
+                                    )
+                                    .onTapGesture { theme.accent = option }
+                                    .accessibilityLabel(option.label)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+
                 Section {
                     NavigationLink {
                         SourcesView()

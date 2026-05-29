@@ -67,6 +67,21 @@ struct RSSClient: NewsAPIClient {
         }
     }
 
+    /// Requests a larger version of small CDN thumbnails so cards aren't blurry.
+    /// BBC's image CDN takes the pixel width in the path and is unsigned, so we
+    /// can safely bump it up. Other providers are left untouched.
+    private static func enhanceImageURL(_ url: String?) -> String? {
+        guard let url else { return nil }
+        // BBC's image CDN puts the pixel width in the path (e.g. /240/cpsprodpb/)
+        // and is unsigned, so we can safely request a larger, sharper version.
+        if url.contains("bbci.co.uk") {
+            return url.replacingOccurrences(of: #"/\d{2,4}/cpsprodpb/"#,
+                                            with: "/800/cpsprodpb/",
+                                            options: .regularExpression)
+        }
+        return url
+    }
+
     private func makeArticle(_ item: RSSParser.RawItem, source: NewsSource) -> Article? {
         let link = item.link.isEmpty ? item.guid : item.link
         guard !link.isEmpty, !item.title.isEmpty else { return nil }
@@ -78,7 +93,7 @@ struct RSSClient: NewsAPIClient {
             section: source.category,
             pillar: source.name,
             url: link,
-            thumbnailURL: item.imageURL,
+            thumbnailURL: Self.enhanceImageURL(item.imageURL),
             publishedAt: item.published ?? .now,
             tags: Article.tokens(
                 section: source.category,

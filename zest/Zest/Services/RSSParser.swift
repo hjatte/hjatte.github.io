@@ -12,6 +12,7 @@ final class RSSParser: NSObject, XMLParserDelegate {
         var published: Date?
         var guid = ""
         var imageURL: String?
+        var imageWidth = 0
         var categories: [String] = []
     }
 
@@ -52,9 +53,15 @@ final class RSSParser: NSObject, XMLParserDelegate {
                 if rel == "alternate" { current?.link = href }
             }
         case "media:thumbnail", "media:content", "enclosure":
-            if let url = attributeDict["url"], current?.imageURL == nil {
+            if let url = attributeDict["url"], current != nil {
                 let type = attributeDict["type"] ?? ""
-                if type.isEmpty || type.hasPrefix("image") { current?.imageURL = url }
+                guard type.isEmpty || type.hasPrefix("image") else { break }
+                let width = Int(attributeDict["width"] ?? "") ?? 0
+                // Keep the biggest image the feed offers (sharper on the card).
+                if current!.imageURL == nil || width > current!.imageWidth {
+                    current!.imageURL = url
+                    current!.imageWidth = width
+                }
             }
         case "category":
             // Atom puts the value in `term`; RSS uses text content (handled below).

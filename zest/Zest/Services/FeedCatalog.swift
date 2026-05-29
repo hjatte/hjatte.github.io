@@ -58,6 +58,13 @@ enum FeedCatalog {
         source("skynews-tech", "Sky News", "technology", "https://feeds.skynews.com/feeds/rss/technology.xml"),
         source("verge", "The Verge", "technology", "https://www.theverge.com/rss/index.xml"),
         source("techcrunch", "TechCrunch", "technology", "https://techcrunch.com/feed/"),
-        source("arstechnica", "Ars Technica", "technology", "https://feeds.arstechnica.com/arstechnica/index")
+        source("arstechnica", "Ars Technica", "technology", "https://feeds.arstechnica.com/arstechnica/index"),
+        source("wired", "Wired", "technology", "https://www.wired.com/feed/rss"),
+        source("engadget", "Engadget", "technology", "https://www.engadget.com/rss.xml"),
+        source("visualcapitalist", "Visual Capitalist", "business", "https://www.visualcapitalist.com/feed/"),
+        source("conversation", "The Conversation", "science", "https://theconversation.com/uk/articles.atom"),
+        source("nature", "Nature", "science", "https://www.nature.com/nature.rss"),
+        source("espn", "ESPN", "sport", "https://www.espn.com/espn/rss/news"),
+        source("polygon", "Polygon", "games", "https://www.polygon.com/rss/index.xml")
     ]
 }

@@ -30,6 +30,7 @@ struct FeedView: View {
         NavigationStack {
             content
                 .navigationTitle("Your Feed")
+                .navigationBarTitleDisplayMode(.inline)
                 .searchable(text: $searchText, prompt: "Search this feed")
                 .toolbar {
                     Button { Task { await vm.refresh() } } label: {

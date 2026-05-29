@@ -26,8 +26,9 @@ struct SwipeCardView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 460)
-        .background(.background, in: RoundedRectangle(cornerRadius: 20))
-        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(.quaternary))
+        .background(.background)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(.quaternary))
         .overlay(alignment: .topLeading) { stamp("INTERESTED", .green, visible: offset.width > 40) }
         .overlay(alignment: .topTrailing) { stamp("PASS", .red, visible: offset.width < -40) }
         .shadow(radius: 6, y: 4)
