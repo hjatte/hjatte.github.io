@@ -26,6 +26,17 @@
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
 
+    <!-- AdMob: required, or the Google Mobile Ads SDK crashes on launch. -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-5777536641877615~1641498693</string>
+    <key>SKAdNetworkItems</key>
+    <array>
+        <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>cstr6suwn9.skadnetwork</string>
+        </dict>
+    </array>
+
     <!-- Deep-link scheme used by the widget: zest://article?u=<url> -->
     <key>CFBundleURLTypes</key>
     <array>

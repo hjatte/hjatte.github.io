@@ -22,10 +22,13 @@ SOURCES = [
     "Zest/Services/RSSParser.swift",
     "Zest/Services/SourceSettings.swift",
     "Zest/Services/ThemeSettings.swift",
+    "Zest/Services/AdConfig.swift",
+    "Zest/Services/NativeAdLoader.swift",
     "Zest/ViewModels/FeedViewModel.swift",
     "Zest/ViewModels/OnboardingViewModel.swift",
     "Zest/Views/FeedView.swift",
     "Zest/Views/FlavourPickerView.swift",
+    "Zest/Views/NativeAdCardView.swift",
     "Zest/Views/InterestsView.swift",
     "Zest/Views/OnboardingView.swift",
     "Zest/Views/RootView.swift",
@@ -62,6 +65,7 @@ sources_phase = gid(); frameworks_phase = gid(); resources_phase = gid()
 target = gid(); project = gid()
 proj_cfg_list = gid(); tgt_cfg_list = gid()
 proj_debug = gid(); proj_release = gid(); tgt_debug = gid(); tgt_release = gid()
+pkg_ref = gid(); prod_dep = gid(); ads_bf = gid()   # Google Mobile Ads SPM
 
 def name(path): return os.path.basename(path)
 
@@ -83,6 +87,8 @@ for f in src:
 for f in res:
     A('\t\t%s /* %s in Resources */ = {isa = PBXBuildFile; fileRef = %s /* %s */; };'
       % (f["bf"], name(f["path"]), f["ref"], name(f["path"])))
+A('\t\t%s /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = %s /* GoogleMobileAds */; };'
+  % (ads_bf, prod_dep))
 A("/* End PBXBuildFile section */")
 
 # PBXFileReference
@@ -98,7 +104,9 @@ A("/* End PBXFileReference section */")
 
 # PBXFrameworksBuildPhase
 A("\n/* Begin PBXFrameworksBuildPhase section */")
-A("\t\t%s /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };" % frameworks_phase)
+A("\t\t%s /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (" % frameworks_phase)
+A("\t\t\t%s /* GoogleMobileAds in Frameworks */," % ads_bf)
+A("\t\t); runOnlyForDeploymentPostprocessing = 0; };")
 A("/* End PBXFrameworksBuildPhase section */")
 
 # PBXGroup
@@ -123,13 +131,13 @@ A("\t\t%s /* Zest */ = {isa = PBXNativeTarget; buildConfigurationList = %s /* Bu
 A("\t\t\t%s /* Sources */," % sources_phase)
 A("\t\t\t%s /* Frameworks */," % frameworks_phase)
 A("\t\t\t%s /* Resources */," % resources_phase)
-A("\t\t); buildRules = (); dependencies = (); name = Zest; productName = Zest; productReference = %s /* Zest.app */; productType = \"com.apple.product-type.application\"; };" % product_ref)
+A("\t\t); buildRules = (); dependencies = (); name = Zest; packageProductDependencies = (%s /* GoogleMobileAds */, ); productName = Zest; productReference = %s /* Zest.app */; productType = \"com.apple.product-type.application\"; };" % (prod_dep, product_ref))
 A("/* End PBXNativeTarget section */")
 
 # PBXProject
 A("\n/* Begin PBXProject section */")
-A("\t\t%s /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {%s = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = %s /* Build configuration list for PBXProject \"Zest\" */; compatibilityVersion = \"Xcode 14.0\"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = %s; productRefGroup = %s /* Products */; projectDirPath = \"\"; projectRoot = \"\"; targets = (%s /* Zest */); };"
-  % (project, target, proj_cfg_list, main_group, products_group, target))
+A("\t\t%s /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {%s = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = %s /* Build configuration list for PBXProject \"Zest\" */; compatibilityVersion = \"Xcode 14.0\"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = %s; productRefGroup = %s /* Products */; projectDirPath = \"\"; projectRoot = \"\"; packageReferences = (%s /* XCRemoteSwiftPackageReference \"swift-package-manager-google-mobile-ads\" */, ); targets = (%s /* Zest */); };"
+  % (project, target, proj_cfg_list, main_group, products_group, pkg_ref, target))
 A("/* End PBXProject section */")
 
 # PBXResourcesBuildPhase
@@ -198,7 +206,7 @@ TARGET_COMMON = """\t\t\t\tASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 \t\t\t\tASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 \t\t\t\tCODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 \t\t\t\tCODE_SIGN_STYLE = Automatic;
-\t\t\t\tCURRENT_PROJECT_VERSION = 5;
+\t\t\t\tCURRENT_PROJECT_VERSION = 6;
 \t\t\t\tDEVELOPMENT_TEAM = "";
 \t\t\t\tENABLE_PREVIEWS = YES;
 \t\t\t\tGENERATE_INFOPLIST_FILE = NO;
@@ -255,6 +263,15 @@ A("\t\t\t%s /* Debug */," % tgt_debug)
 A("\t\t\t%s /* Release */," % tgt_release)
 A("\t\t); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };")
 A("/* End XCConfigurationList section */")
+
+# Swift Package Manager: Google Mobile Ads
+A("\n/* Begin XCRemoteSwiftPackageReference section */")
+A('\t\t%s /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git"; requirement = {kind = upToNextMajorVersion; minimumVersion = 11.0.0; }; };' % pkg_ref)
+A("/* End XCRemoteSwiftPackageReference section */")
+
+A("\n/* Begin XCSwiftPackageProductDependency section */")
+A('\t\t%s /* GoogleMobileAds */ = {isa = XCSwiftPackageProductDependency; package = %s /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */; productName = GoogleMobileAds; };' % (prod_dep, pkg_ref))
+A("/* End XCSwiftPackageProductDependency section */")
 
 A("\t};")
 A("\trootObject = %s /* Project object */;" % project)
