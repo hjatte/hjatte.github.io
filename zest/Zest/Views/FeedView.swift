@@ -74,20 +74,43 @@ struct FeedView: View {
         }
     }
 
-    private var list: some View {
-        List(visibleArticles) { article in
-            Button {
-                open(article)
-            } label: {
-                ArticleRow(article: article,
-                           isPinned: article.tags.contains(where: store.pinnedTags.contains))
+    /// Feed rows with native ads mixed in every few stories (not while searching).
+    private var feedItems: [FeedItem] {
+        let articles = visibleArticles
+        guard searchText.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return articles.map(FeedItem.article)
+        }
+        var items: [FeedItem] = []
+        var adCount = 0
+        for (i, article) in articles.enumerated() {
+            items.append(.article(article))
+            if (i + 1) % AdConfig.adEveryN == 0 && adCount < AdConfig.maxAdsPerFeed {
+                items.append(.ad(adCount))
+                adCount += 1
             }
-            .buttonStyle(.plain)
-            .swipeActions(edge: .trailing) {
-                Button(role: .destructive) {
-                    store.record(.hideArticle, for: article)
-                    vm.reorder()
-                } label: { Label("Less", systemImage: "hand.thumbsdown") }
+        }
+        return items
+    }
+
+    private var list: some View {
+        List(feedItems) { item in
+            switch item {
+            case .article(let article):
+                Button {
+                    open(article)
+                } label: {
+                    ArticleRow(article: article,
+                               isPinned: article.tags.contains(where: store.pinnedTags.contains))
+                }
+                .buttonStyle(.plain)
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        store.record(.hideArticle, for: article)
+                        vm.reorder()
+                    } label: { Label("Less", systemImage: "hand.thumbsdown") }
+                }
+            case .ad:
+                NativeAdSlot()
             }
         }
         .listStyle(.plain)
@@ -98,6 +121,18 @@ struct FeedView: View {
         // Clicking is the strongest interest signal — your "+10" example.
         store.record(.openArticle, for: article)
         if let url = URL(string: article.url) { reader = ReaderLink(url: url) }
+    }
+}
+
+/// A feed entry: either a story or a native-ad slot.
+private enum FeedItem: Identifiable {
+    case article(Article)
+    case ad(Int)
+    var id: String {
+        switch self {
+        case .article(let a): return a.id
+        case .ad(let i): return "ad-\(i)"
+        }
     }
 }
 

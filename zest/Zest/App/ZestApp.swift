@@ -1,4 +1,5 @@
 import SwiftUI
+import GoogleMobileAds
 
 @main
 struct ZestApp: App {
@@ -7,6 +8,10 @@ struct ZestApp: App {
     /// Aggregates many free, no-key RSS sources. Swap for another
     /// `NewsAPIClient` to change providers.
     private let client: NewsAPIClient = RSSClient()
+
+    init() {
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+    }
 
     var body: some Scene {
         WindowGroup {
