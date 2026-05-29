@@ -141,6 +141,15 @@ struct ArticleRow: View {
     let article: Article
     var isPinned = false
 
+    /// Topic tags worth showing — drops the publisher slug and generic words.
+    private var displayTags: [String] {
+        let src = (article.pillar ?? "").lowercased().split(separator: " ").first.map(String.init) ?? ""
+        var seen = Set<String>()
+        return article.tags.filter {
+            $0 != src && $0 != "news" && $0 != article.section && seen.insert($0).inserted
+        }
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
@@ -156,6 +165,9 @@ struct ArticleRow: View {
                 Text(article.title).font(.headline).lineLimit(3)
                 if let trail = article.trailText {
                     Text(trail).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                }
+                if !displayTags.isEmpty {
+                    TagChips(tags: displayTags)
                 }
                 Text(article.publishedAt, format: .relative(presentation: .named))
                     .font(.caption2).foregroundStyle(.tertiary)

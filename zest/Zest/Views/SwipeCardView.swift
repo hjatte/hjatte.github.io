@@ -90,10 +90,16 @@ struct TagChips: View {
     private func row(_ items: [String]) -> some View {
         HStack(spacing: 6) {
             ForEach(items, id: \.self) { tag in
-                Text(tag)
-                    .font(.caption2).padding(.horizontal, 8).padding(.vertical, 4)
+                Text(Self.display(tag))
+                    .font(.caption2.weight(.medium))
+                    .padding(.horizontal, 8).padding(.vertical, 4)
                     .background(.quaternary, in: Capsule())
             }
         }
+    }
+
+    /// Short tokens (uk, ai, eu, us) shown upper-case; everything else title-cased.
+    static func display(_ tag: String) -> String {
+        tag.count <= 3 ? tag.uppercased() : tag.capitalized
     }
 }
