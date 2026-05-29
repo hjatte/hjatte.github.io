@@ -5,7 +5,7 @@
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "000000000000000000000043"
+               BlueprintIdentifier = "000000000000000000000045"
                BuildableName = "Zest.app"
                BlueprintName = "Zest"
                ReferencedContainer = "container:Zest.xcodeproj">
@@ -21,7 +21,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "000000000000000000000043"
+            BlueprintIdentifier = "000000000000000000000045"
             BuildableName = "Zest.app"
             BlueprintName = "Zest"
             ReferencedContainer = "container:Zest.xcodeproj">
@@ -32,7 +32,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "000000000000000000000043"
+            BlueprintIdentifier = "000000000000000000000045"
             BuildableName = "Zest.app"
             BlueprintName = "Zest"
             ReferencedContainer = "container:Zest.xcodeproj">

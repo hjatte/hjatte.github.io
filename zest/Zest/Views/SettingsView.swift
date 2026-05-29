@@ -8,27 +8,16 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Appearance") {
-                    Picker("Theme", selection: $theme.appearance) {
-                        ForEach(AppAppearance.allCases) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Accent colour").font(.subheadline)
-                        HStack(spacing: 14) {
-                            ForEach(AccentTheme.allCases) { option in
-                                Circle()
-                                    .fill(option.color)
-                                    .frame(width: 30, height: 30)
-                                    .overlay(
-                                        Circle().strokeBorder(.primary, lineWidth: theme.accent == option ? 3 : 0)
-                                    )
-                                    .onTapGesture { theme.accent = option }
-                                    .accessibilityLabel(option.label)
-                            }
+                    NavigationLink {
+                        FlavourPickerView(isOnboarding: false)
+                    } label: {
+                        HStack {
+                            Text("Flavour")
+                            Spacer()
+                            Circle().fill(theme.flavour.accent).frame(width: 18, height: 18)
+                            Text(theme.flavour.name).foregroundStyle(.secondary)
                         }
                     }
-                    .padding(.vertical, 4)
                 }
 
                 Section {

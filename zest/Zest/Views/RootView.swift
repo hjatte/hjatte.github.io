@@ -7,6 +7,7 @@ struct RootView: View {
 
     @EnvironmentObject private var store: InterestStore
     @StateObject private var theme = ThemeSettings.shared
+    @AppStorage("hasPickedFlavour") private var hasPickedFlavour = false
     @AppStorage("hasOnboarded") private var hasOnboarded = false
 
     /// A URL the widget asked us to open, surfaced once the feed is up.
@@ -14,16 +15,18 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if hasOnboarded {
-                MainTabView(client: client, pendingURL: $pendingURL)
-            } else {
+            if !hasPickedFlavour {
+                FlavourPickerView(isOnboarding: true) { hasPickedFlavour = true }
+            } else if !hasOnboarded {
                 OnboardingView(client: client, isFirstRun: true) {
                     hasOnboarded = true
                 }
+            } else {
+                MainTabView(client: client, pendingURL: $pendingURL)
             }
         }
-        .tint(theme.accent.color)
-        .preferredColorScheme(theme.appearance.colorScheme)
+        .tint(theme.flavour.accent)
+        .preferredColorScheme(hasPickedFlavour ? theme.flavour.colorScheme : .dark)
         .onOpenURL { url in
             // zest://article?u=<percent-encoded-web-url>
             if url.scheme == AppGroup.urlScheme,

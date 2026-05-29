@@ -43,7 +43,7 @@ struct OnboardingView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") { onFinish() }
                             .fontWeight(.semibold)
-                            .disabled(vm.swipedCount < 3)
+                            .disabled(vm.swipedCount < 25)
                     }
                 }
             }
@@ -54,12 +54,15 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(spacing: 4) {
             Text(isFirstRun
-                 ? "Swipe right on what interests you, left on what doesn't. Tap Done when you've sorted a few."
+                 ? "Swipe right on what interests you, left on what doesn't. Sort at least 25 so we get a feel for your taste."
                  : "Top up your feed any time — swipe to nudge your interests.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            if vm.swipedCount > 0 {
+            if isFirstRun {
+                Text("\(min(vm.swipedCount, 25)) / 25 sorted")
+                    .font(.caption).foregroundStyle(.tertiary)
+            } else if vm.swipedCount > 0 {
                 Text("\(vm.swipedCount) sorted").font(.caption).foregroundStyle(.tertiary)
             }
         }
