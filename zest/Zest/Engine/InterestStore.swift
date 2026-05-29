@@ -1,47 +1,57 @@
 import Foundation
 import Combine
 
-/// Owns the user's `InterestProfile`, persists it to the shared App Group
-/// container, and turns user interactions into score changes. This is the
-/// single source of truth the whole app observes.
+/// Everything we persist, as one blob. Saved locally *and* mirrored to iCloud
+/// so your interests follow you across your own devices.
+private struct PersistedState: Codable {
+    var profile: InterestProfile
+    var seen: [String]
+    var pinned: [String]
+    var updatedAt: Date
+}
+
+/// Owns the user's `InterestProfile`, persists it, and syncs it across the
+/// user's devices via iCloud key-value storage (no login required — it uses
+/// whatever iCloud account the device is signed into). Local storage is always
+/// the source of truth; iCloud is a mirror that wins only when it's newer.
 final class InterestStore: ObservableObject {
-    /// Single shared instance. Views build their view models against this and
-    /// also observe it via `@EnvironmentObject`, so there's one source of truth.
+    /// Single shared instance observed across the app.
     static let shared = InterestStore()
 
     @Published private(set) var profile: InterestProfile
     @Published private(set) var seenIDs: Set<String>
-    /// Topics the user explicitly pinned. These are always boosted in the feed
-    /// and never decay or get pruned — they sit on top of what the engine learns.
     @Published private(set) var pinnedTags: Set<String>
 
     private let defaults = AppGroup.defaults
-    private let profileKey = "interest.profile.v1"
-    private let seenKey = "interest.seen.v1"
-    private let pinnedKey = "interest.pinned.v1"
+    private let cloud = NSUbiquitousKeyValueStore.default
+    private let stateKey = "interest.state.v2"
+    private var lastUpdatedAt: Date = .distantPast
 
     init() {
-        if let data = defaults.data(forKey: profileKey),
-           let saved = try? JSONDecoder.shared.decode(InterestProfile.self, from: data) {
-            profile = saved
-        } else {
-            profile = InterestProfile()
-        }
+        profile = InterestProfile()
+        seenIDs = []
+        pinnedTags = []
 
-        if let data = defaults.data(forKey: seenKey),
-           let saved = try? JSONDecoder.shared.decode([String].self, from: data) {
-            seenIDs = Set(saved)
-        } else {
-            seenIDs = []
+        // Load whatever we saved locally last time…
+        if let local = decode(defaults.data(forKey: stateKey)) {
+            apply(local)
         }
-
-        if let saved = defaults.array(forKey: pinnedKey) as? [String] {
-            pinnedTags = Set(saved)
-        } else {
-            pinnedTags = []
+        // …then adopt iCloud's copy if another device saved something newer.
+        if let remote = decode(cloud.data(forKey: stateKey)), remote.updatedAt > lastUpdatedAt {
+            apply(remote)
+            saveLocalOnly(remote)
         }
 
         profile.prune()
+
+        // React to changes pushed from the user's other devices (block-based
+        // API so this plain Swift class needn't be an NSObject).
+        NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: cloud, queue: .main) { [weak self] _ in
+                self?.mergeFromCloud()
+            }
+        _ = cloud.synchronize()
     }
 
     // MARK: Interactions
@@ -52,7 +62,6 @@ final class InterestStore: ObservableObject {
         persist()
     }
 
-    /// Call when a batch of articles is shown in the feed so unclicked topics fade.
     func registerImpressions(for articles: [Article]) {
         let tags = articles.flatMap(\.tags)
         guard !tags.isEmpty else { return }
@@ -62,11 +71,9 @@ final class InterestStore: ObservableObject {
 
     func markSeen(_ article: Article) {
         seenIDs.insert(article.id)
-        // Keep the seen set bounded so it doesn't grow forever.
         if seenIDs.count > 2_000 { seenIDs = Set(seenIDs.prefix(1_500)) }
     }
 
-    /// Adjusts how fast interests decay (bound to the slider in Interests).
     func setHalfLife(_ days: Double) {
         profile.halfLifeDays = max(1, days)
         persist()
@@ -74,14 +81,11 @@ final class InterestStore: ObservableObject {
 
     // MARK: Pinned topics
 
-    /// Pins a free-text topic. Multi-word input is split into tokens (so
-    /// "climate change" pins both "climate" and "change"), matching how
-    /// articles are tagged. Also gives each token a learned-score head start.
     func pin(_ rawTopic: String) {
         let tokens = InterestStore.tokenize(rawTopic)
         guard !tokens.isEmpty else { return }
         pinnedTags.formUnion(tokens)
-        profile.apply(.onboardingLike, tags: tokens) // so it shows up immediately
+        profile.apply(.onboardingLike, tags: tokens)
         persist()
     }
 
@@ -92,8 +96,6 @@ final class InterestStore: ObservableObject {
 
     func isPinned(_ tag: String) -> Bool { pinnedTags.contains(tag) }
 
-    /// Normalises free text into interest tokens (lower-cased, split on spaces
-    /// and hyphens, short/stop words dropped).
     static func tokenize(_ raw: String) -> [String] {
         raw.lowercased()
             .split { $0 == " " || $0 == "-" || $0 == "," }
@@ -101,7 +103,6 @@ final class InterestStore: ObservableObject {
             .filter { $0.count >= 2 }
     }
 
-    /// Wipe everything (used by "Reset interests").
     func reset() {
         profile = InterestProfile()
         seenIDs = []
@@ -111,7 +112,6 @@ final class InterestStore: ObservableObject {
 
     // MARK: Widget hand-off
 
-    /// Publishes the top of the personalised feed to the widget.
     func publishToWidget(rankedTop articles: [Article]) {
         let headlines = articles.prefix(6).map {
             WidgetHeadline(id: $0.id, title: $0.title, section: $0.section,
@@ -126,15 +126,41 @@ final class InterestStore: ObservableObject {
         SharedStore.writeSnapshot(snapshot)
     }
 
-    // MARK: Persistence
+    // MARK: Persistence + sync
 
     private func persist() {
-        if let data = try? JSONEncoder.shared.encode(profile) {
-            defaults.set(data, forKey: profileKey)
+        lastUpdatedAt = Date()
+        let state = PersistedState(profile: profile, seen: Array(seenIDs),
+                                   pinned: Array(pinnedTags), updatedAt: lastUpdatedAt)
+        guard let data = try? JSONEncoder.shared.encode(state) else { return }
+        defaults.set(data, forKey: stateKey)   // local: always the source of truth
+        cloud.set(data, forKey: stateKey)       // mirror to iCloud
+        _ = cloud.synchronize()
+    }
+
+    private func saveLocalOnly(_ state: PersistedState) {
+        if let data = try? JSONEncoder.shared.encode(state) {
+            defaults.set(data, forKey: stateKey)
         }
-        if let data = try? JSONEncoder.shared.encode(Array(seenIDs)) {
-            defaults.set(data, forKey: seenKey)
-        }
-        defaults.set(Array(pinnedTags), forKey: pinnedKey)
+    }
+
+    private func apply(_ state: PersistedState) {
+        profile = state.profile
+        seenIDs = Set(state.seen)
+        pinnedTags = Set(state.pinned)
+        lastUpdatedAt = state.updatedAt
+    }
+
+    private func decode(_ data: Data?) -> PersistedState? {
+        guard let data else { return nil }
+        return try? JSONDecoder.shared.decode(PersistedState.self, from: data)
+    }
+
+    /// Adopt the iCloud copy when another device saved something newer.
+    private func mergeFromCloud() {
+        guard let remote = decode(cloud.data(forKey: stateKey)),
+              remote.updatedAt > lastUpdatedAt else { return }
+        apply(remote)
+        saveLocalOnly(remote)
     }
 }

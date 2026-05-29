@@ -28,6 +28,12 @@ ZIP** → unzip → double-click **`Zest.xcodeproj`**.
 5. **Bundle Identifier** is `com.hjatte.zest`. If Xcode complains it's taken or
    invalid, change it to something unique, e.g. `com.harryattenborough.zest`.
    Xcode will register it with Apple for you (a green tick appears).
+6. **iCloud sync (for syncing your interests across iPhone + iPad):** still on
+   the **Signing & Capabilities** tab, you should see an **iCloud** section with
+   **Key-value storage** ticked (the project already declares it). If it's not
+   shown, click **+ Capability**, add **iCloud**, and tick **Key-value storage**.
+   Xcode enables it on your account automatically. No login screen needed — it
+   uses whatever iCloud account each device is signed into.
 
 ## 3. Create the app record in App Store Connect (one-time)
 

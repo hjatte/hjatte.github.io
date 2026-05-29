@@ -36,6 +36,17 @@ struct OnboardingView: View {
             .padding()
             .navigationTitle(isFirstRun ? "Find your feed" : "Refine")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // First-run: let people finish whenever they've swiped enough,
+                // rather than having to clear the whole deck.
+                if isFirstRun, vm.state == .ready {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") { onFinish() }
+                            .fontWeight(.semibold)
+                            .disabled(vm.swipedCount < 3)
+                    }
+                }
+            }
         }
         .task { if vm.deck.isEmpty { await vm.load() } }
     }
@@ -43,7 +54,7 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(spacing: 4) {
             Text(isFirstRun
-                 ? "Swipe right on what interests you, left on what doesn't. We'll learn your taste."
+                 ? "Swipe right on what interests you, left on what doesn't. Tap Done when you've sorted a few."
                  : "Top up your feed any time — swipe to nudge your interests.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

@@ -2,9 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>com.apple.security.application-groups</key>
-    <array>
-        <string>group.com.hjatte.zest</string>
-    </array>
+    <!-- iCloud key-value storage: syncs the interest profile across the user's
+         devices automatically (no sign-in needed). Enable the matching
+         "iCloud > Key-value storage" capability in Signing & Capabilities. -->
+    <key>com.apple.developer.ubiquity-kvstore-identifier</key>
+    <string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
 </dict>
 </plist>
