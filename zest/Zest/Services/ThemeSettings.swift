@@ -19,13 +19,30 @@ struct Flavour: Identifiable, Hashable {
     var colorScheme: ColorScheme { dark ? .dark : .light }
     var cardText: Color { dark ? .white : .black }
 
-    static let all: [Flavour] = [
+    // Six light flavours.
+    static let lightFlavours: [Flavour] = [
         Flavour(id: "tangerine", name: "Tangerine", tagline: "Zesty & warm",
                 accent: rgb(255,128,0), dark: false, cardBackground: rgb(255,243,224),
                 swatches: [rgb(255,140,40), rgb(244,107,20)]),
         Flavour(id: "bluelemon", name: "Blue Lemon", tagline: "Crisp & cool",
                 accent: rgb(40,120,220), dark: false, cardBackground: rgb(251,246,233),
                 swatches: [rgb(40,120,220), rgb(247,206,70)]),
+        Flavour(id: "rose", name: "Rose Grapefruit", tagline: "Soft & sweet",
+                accent: rgb(224,84,120), dark: false, cardBackground: rgb(252,238,241),
+                swatches: [rgb(224,84,120), rgb(245,160,120)]),
+        Flavour(id: "mint", name: "Mint Lime", tagline: "Fresh & breezy",
+                accent: rgb(34,158,108), dark: false, cardBackground: rgb(233,246,238),
+                swatches: [rgb(34,158,108), rgb(170,210,90)]),
+        Flavour(id: "brown", name: "Brown Bergamot", tagline: "Toasted & warm",
+                accent: rgb(150,95,55), dark: false, cardBackground: rgb(237,224,206),
+                swatches: [rgb(150,95,55), rgb(100,60,30)]),
+        Flavour(id: "slate", name: "Slate Sudachi", tagline: "Calm & minimal",
+                accent: rgb(78,128,92), dark: false, cardBackground: rgb(227,231,229),
+                swatches: [rgb(90,110,120), rgb(78,140,90)])
+    ]
+
+    // Six dark flavours.
+    static let darkFlavours: [Flavour] = [
         Flavour(id: "indigo", name: "Indigo Citron", tagline: "Deep & dreamy",
                 accent: rgb(124,108,240), dark: true, cardBackground: rgb(20,20,42),
                 swatches: [rgb(124,108,240), rgb(70,60,160)]),
@@ -38,18 +55,16 @@ struct Flavour: Identifiable, Hashable {
         Flavour(id: "plum", name: "Plum Tangelo", tagline: "Dark & velvety",
                 accent: rgb(214,93,148), dark: true, cardBackground: rgb(36,14,24),
                 swatches: [rgb(214,93,148), rgb(150,50,90)]),
-        Flavour(id: "brown", name: "Brown Bergamot", tagline: "Toasted & warm",
-                accent: rgb(150,95,55), dark: false, cardBackground: rgb(237,224,206),
-                swatches: [rgb(150,95,55), rgb(100,60,30)]),
-        Flavour(id: "slate", name: "Slate Sudachi", tagline: "Calm & minimal",
-                accent: rgb(78,128,92), dark: false, cardBackground: rgb(227,231,229),
-                swatches: [rgb(90,110,120), rgb(78,140,90)]),
+        Flavour(id: "crimson", name: "Crimson Blood Orange", tagline: "Bold & juicy",
+                accent: rgb(232,84,60), dark: true, cardBackground: rgb(30,12,12),
+                swatches: [rgb(232,84,60), rgb(150,40,30)]),
         Flavour(id: "ink", name: "Ink Oroblanco", tagline: "Bold & classic",
                 accent: rgb(235,235,235), dark: true, cardBackground: rgb(10,10,10),
                 swatches: [rgb(245,245,245), rgb(160,160,160)])
     ]
 
-    static var fallback: Flavour { all[0] }
+    static let all: [Flavour] = lightFlavours + darkFlavours
+    static var fallback: Flavour { lightFlavours[0] }
     static func by(id: String) -> Flavour { all.first { $0.id == id } ?? fallback }
 }
 

@@ -8,6 +8,8 @@ private struct PersistedState: Codable {
     var seen: [String]
     var pinned: [String]
     var shown: [String]?     // optional so older saved data still decodes
+    var activeDay: Int?      // how many distinct days the app has been opened
+    var lastActiveDate: String?
     var updatedAt: Date
 }
 
@@ -31,22 +33,37 @@ final class InterestStore: ObservableObject {
     private let stateKey = "interest.state.v2"
     private var lastUpdatedAt: Date = .distantPast
 
+    // MARK: Active-day decay clock
+    // Interests decay by *days you open the app*, not calendar days. We model
+    // this with a synthetic "now" that only advances on active days, so the
+    // half-life logic in InterestProfile works unchanged.
+    private(set) var activeDay: Int = 0
+    private var lastActiveDate: String?
+    private static let decayReference = Date(timeIntervalSinceReferenceDate: 0)
+    var decayNow: Date { Self.decayReference.addingTimeInterval(Double(activeDay) * 86_400) }
+
     init() {
         profile = InterestProfile()
         seenIDs = []
         pinnedTags = []
 
-        // Load whatever we saved locally last time…
-        if let local = decode(defaults.data(forKey: stateKey)) {
-            apply(local)
-        }
-        // …then adopt iCloud's copy if another device saved something newer.
+        if let local = decode(defaults.data(forKey: stateKey)) { apply(local) }
         if let remote = decode(cloud.data(forKey: stateKey)), remote.updatedAt > lastUpdatedAt {
             apply(remote)
             saveLocalOnly(remote)
         }
 
-        profile.prune()
+        // Migrate older saves (which decayed by calendar time) onto the clock.
+        let migrating = (lastActiveDate == nil && !profile.isEmpty)
+        if activeDay == 0 { activeDay = 1 }
+        let today = Self.dayKey()
+        if lastActiveDate != today {                 // a new active day
+            activeDay += 1
+            lastActiveDate = today
+        }
+        if migrating { profile.restampAll(to: decayNow) }
+
+        profile.prune(now: decayNow)
 
         // React to changes pushed from the user's other devices (block-based
         // API so this plain Swift class needn't be an NSObject).
@@ -56,12 +73,25 @@ final class InterestStore: ObservableObject {
                 self?.mergeFromCloud()
             }
         _ = cloud.synchronize()
+        persist(syncCloud: false)   // save today's active-day bookkeeping
+    }
+
+    private static func dayKey(_ date: Date = Date()) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
+    }
+
+    /// Strongest interests right now, using the active-day decay clock.
+    func topTags(limit: Int = 12) -> [TagScore] {
+        profile.topTags(limit: limit, now: decayNow)
     }
 
     // MARK: Interactions
 
     func record(_ event: InteractionEvent, for article: Article) {
-        profile.apply(event, tags: article.tags)
+        profile.apply(event, tags: article.tags, now: decayNow)
         if case .openArticle = event { markSeen(article) }
         persist()
     }
@@ -69,7 +99,7 @@ final class InterestStore: ObservableObject {
     func registerImpressions(for articles: [Article]) {
         let tags = articles.flatMap(\.tags)
         guard !tags.isEmpty else { return }
-        profile.registerImpressions(tags: tags)
+        profile.registerImpressions(tags: tags, now: decayNow)
         persist()
     }
 
@@ -88,7 +118,7 @@ final class InterestStore: ObservableObject {
 
     /// How strongly an article matches the current interest profile.
     func interestScore(for article: Article) -> Double {
-        article.tags.reduce(0) { $0 + profile.effectiveScore($1) }
+        article.tags.reduce(0) { $0 + profile.effectiveScore($1, asOf: decayNow) }
     }
 
     func setHalfLife(_ days: Double) {
@@ -102,7 +132,7 @@ final class InterestStore: ObservableObject {
         let tokens = InterestStore.tokenize(rawTopic)
         guard !tokens.isEmpty else { return }
         pinnedTags.formUnion(tokens)
-        profile.apply(.onboardingLike, tags: tokens)
+        profile.apply(.onboardingLike, tags: tokens, now: decayNow)
         persist()
     }
 
@@ -134,12 +164,12 @@ final class InterestStore: ObservableObject {
         let headlines = articles.prefix(6).map {
             WidgetHeadline(id: $0.id, title: $0.title, section: $0.section,
                            source: $0.pillar ?? "", url: $0.url, publishedAt: $0.publishedAt,
-                           score: $0.tags.reduce(0) { $0 + profile.effectiveScore($1) })
+                           score: interestScore(for: $0))
         }
         let snapshot = WidgetSnapshot(
             headlines: Array(headlines),
             updatedAt: .now,
-            topInterests: profile.topTags(limit: 3).map(\.tag)
+            topInterests: profile.topTags(limit: 3, now: decayNow).map(\.tag)
         )
         SharedStore.writeSnapshot(snapshot)
     }
@@ -150,6 +180,7 @@ final class InterestStore: ObservableObject {
         lastUpdatedAt = Date()
         let state = PersistedState(profile: profile, seen: Array(seenIDs),
                                    pinned: Array(pinnedTags), shown: Array(shownIDs),
+                                   activeDay: activeDay, lastActiveDate: lastActiveDate,
                                    updatedAt: lastUpdatedAt)
         guard let data = try? JSONEncoder.shared.encode(state) else { return }
         defaults.set(data, forKey: stateKey)   // local: always the source of truth
@@ -170,6 +201,8 @@ final class InterestStore: ObservableObject {
         seenIDs = Set(state.seen)
         pinnedTags = Set(state.pinned)
         shownIDs = Set(state.shown ?? [])
+        activeDay = state.activeDay ?? activeDay
+        lastActiveDate = state.lastActiveDate
         lastUpdatedAt = state.updatedAt
     }
 

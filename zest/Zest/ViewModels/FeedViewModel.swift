@@ -38,7 +38,7 @@ final class FeedViewModel: ObservableObject {
     func refresh() async {
         if articles.isEmpty { state = .loading }
         do {
-            let interests = store.profile.topTags(limit: 8).map(\.tag)
+            let interests = store.topTags(limit: 8).map(\.tag)
             let fetched = try await client.fetchFeed(interests: interests)
 
             // Merge fresh stories with the relevant ones we already had, drop
@@ -48,7 +48,8 @@ final class FeedViewModel: ObservableObject {
             let fresh = pool.filter(isFresh)
             let ranked = Array(
                 FeedRanker.rank(fresh, profile: store.profile,
-                                seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
+                                seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
+                                now: store.decayNow)
                     .prefix(maxFeed)
             )
 
@@ -71,7 +72,8 @@ final class FeedViewModel: ObservableObject {
     func reorder() {
         let unread = unreadOnly(articles)
         articles = FeedRanker.rank(unread, profile: store.profile,
-                                   seenIDs: store.seenIDs, pinnedTags: store.pinnedTags)
+                                   seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
+                                   now: store.decayNow)
         saveCache(articles)
     }
 

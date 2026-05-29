@@ -8,7 +8,7 @@ struct InterestsView: View {
     @State private var confirmingReset = false
 
     private var top: [TagScore] {
-        store.profile.topTags(limit: 18)
+        store.topTags(limit: 18)
     }
 
     var body: some View {
@@ -52,7 +52,7 @@ struct InterestsView: View {
                                     ),
                                     in: 3...45, step: 1
                                 )
-                                Text("Interests you stop engaging with fade to zero over time. Lower = forgets faster.")
+                                Text("Interests fade over the days you actually open the app (not calendar days). Lower = forgets faster.")
                                     .font(.caption).foregroundStyle(.secondary)
                             }
                         } header: {

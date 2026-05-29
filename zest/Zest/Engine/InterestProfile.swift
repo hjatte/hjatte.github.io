@@ -100,6 +100,12 @@ struct InterestProfile: Codable {
 
     var isEmpty: Bool { weights.isEmpty }
 
+    /// Re-stamps every tag's "last updated" to `date`. Used once when migrating
+    /// to the active-day decay clock so existing interests don't over-decay.
+    mutating func restampAll(to date: Date) {
+        for key in weights.keys { weights[key]?.lastUpdated = date }
+    }
+
     // MARK: Helpers
 
     /// Bakes the current decayed value back into `score` and stamps `now`,
