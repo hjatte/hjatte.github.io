@@ -13,6 +13,7 @@ struct FeedView: View {
     @State private var lastOpened: Article?
     @State private var learnToast: [String]?
     @State private var whyText: String?
+    @AppStorage("serendipity") private var serendipity = 0.3
 
     init(client: NewsAPIClient, pendingURL: Binding<URL?>) {
         _vm = StateObject(wrappedValue: FeedViewModel(client: client, store: InterestStore.shared))
@@ -143,45 +144,78 @@ struct FeedView: View {
         return items
     }
 
+    /// The "Beyond your bubble" picks, pulled out of the main stream.
+    private var bubbleSlice: [Article] {
+        guard serendipity > 0.05, !interestTokens.isEmpty,
+              searchText.trimmingCharacters(in: .whitespaces).isEmpty else { return [] }
+        return Array(visibleArticles.filter(isOutsideBubble).prefix(4))
+    }
+
+    private var mainFeedItems: [FeedItem] {
+        let ids = Set(bubbleSlice.map(\.id))
+        return feedItems.filter {
+            if case .article(let a) = $0 { return !ids.contains(a.id) }
+            return true
+        }
+    }
+
     private var list: some View {
         ScrollViewReader { proxy in
             List {
-                ForEach(feedItems) { item in
-                    switch item {
-                    case .article(let article):
-                        Button {
-                            open(article)
-                        } label: {
-                            ArticleRow(article: article,
-                                       isPinned: article.tags.contains(where: store.pinnedTags.contains),
-                                       outsideBubble: isOutsideBubble(article))
+                Section {
+                    ForEach(mainFeedItems) { item in
+                        switch item {
+                        case .article(let article):
+                            articleButton(article, showBubbleBadge: isOutsideBubble(article))
+                        case .ad:
+                            NativeAdSlot()
                         }
-                        .buttonStyle(.plain)
-                        .onAppear { store.markShown(article) }
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                store.record(.hideArticle, for: article)
-                                vm.reorder()
-                            } label: { Label("Less", systemImage: "hand.thumbsdown") }
-                        }
-                        .contextMenu {
-                            Button { whyText = whyReason(for: article) } label: {
-                                Label("Why am I seeing this?", systemImage: "questionmark.circle")
-                            }
-                            Button(role: .destructive) {
-                                store.record(.hideArticle, for: article)
-                                vm.reorder()
-                            } label: { Label("Show me less like this", systemImage: "hand.thumbsdown") }
-                        }
-                    case .ad:
-                        NativeAdSlot()
                     }
                 }
+
+                if !bubbleSlice.isEmpty {
+                    Section {
+                        ForEach(bubbleSlice) { articleButton($0, showBubbleBadge: false) }
+                    } header: {
+                        Label("Beyond your bubble", systemImage: "safari")
+                    } footer: {
+                        Text("Stories outside your usual topics, chosen to widen your view. Tune this in Settings → Discovery.")
+                    }
+                }
+
                 caughtUpFooter
             }
             .listStyle(.plain)
             .refreshable { await vm.refresh() }
             .onAppear { scrollProxy = proxy }
+        }
+    }
+
+    @ViewBuilder
+    private func articleButton(_ article: Article, showBubbleBadge: Bool) -> some View {
+        Button {
+            open(article)
+        } label: {
+            ArticleRow(article: article,
+                       isPinned: article.tags.contains(where: store.pinnedTags.contains),
+                       outsideBubble: showBubbleBadge)
+        }
+        .buttonStyle(.plain)
+        .onAppear { store.markShown(article) }
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                store.record(.hideArticle, for: article)
+                vm.reorder()
+            } label: { Label("Less", systemImage: "hand.thumbsdown") }
+        }
+        .contextMenu {
+            Button { whyText = whyReason(for: article) } label: {
+                Label("Why am I seeing this?", systemImage: "questionmark.circle")
+            }
+            Button(role: .destructive) {
+                store.record(.hideArticle, for: article)
+                vm.reorder()
+            } label: { Label("Show me less like this", systemImage: "hand.thumbsdown") }
         }
     }
 

@@ -56,7 +56,7 @@ final class FeedViewModel: ObservableObject {
                 FeedRanker.rank(fresh, profile: store.profile,
                                 seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
                                 interestTopics: interests,
-                                now: store.decayNow, explorationEpsilon: explorationEpsilon)
+                                decayDate: store.decayNow, explorationEpsilon: explorationEpsilon)
                     .prefix(maxFeed)
             )
 
@@ -80,7 +80,8 @@ final class FeedViewModel: ObservableObject {
         let unread = unreadOnly(articles)
         articles = FeedRanker.rank(unread, profile: store.profile,
                                    seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
-                                   now: store.decayNow)
+                                   interestTopics: store.topTags(limit: 10).map(\.tag),
+                                   decayDate: store.decayNow, explorationEpsilon: explorationEpsilon)
         saveCache(articles)
     }
 

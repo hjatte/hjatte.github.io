@@ -16,27 +16,33 @@ enum TopicGraph {
     static let cluster: [String: String] = build([
         "pol":     ["politics", "world", "uk", "us", "usa", "eu", "europe", "election",
                     "elections", "war", "ukraine", "russia", "china", "gaza", "israel",
-                    "government", "immigration", "uk-news"],
+                    "government", "immigration", "uk-news", "trump", "biden", "starmer",
+                    "parliament", "westminster", "diplomacy", "protest", "law", "courts"],
         "biz":     ["business", "economy", "economics", "markets", "market", "finance",
-                    "money", "tax", "trade", "banking", "stocks", "inflation", "jobs"],
+                    "money", "tax", "trade", "banking", "stocks", "inflation", "jobs",
+                    "housing", "retail", "property", "investing"],
         "tech":    ["technology", "tech", "ai", "gadgets", "apple", "iphone", "android",
-                    "software", "startups", "startup", "internet", "crypto", "cybersecurity"],
+                    "software", "startups", "startup", "internet", "crypto", "cybersecurity",
+                    "google", "microsoft", "meta", "tesla", "robotics", "data", "privacy"],
         "sci":     ["science", "space", "astronomy", "physics", "biology", "research",
-                    "nature", "environment", "climate", "energy", "weather"],
+                    "nature", "environment", "climate", "energy", "weather", "ocean",
+                    "wildlife", "genetics", "chemistry"],
         "health":  ["health", "wellbeing", "wellness", "medicine", "fitness", "mental",
-                    "nutrition"],
+                    "nutrition", "covid", "disease", "diet", "sleep", "longevity"],
         "sport":   ["sport", "sports", "football", "soccer", "tennis", "cricket", "rugby",
-                    "f1", "formula", "olympics", "nba", "nfl", "golf", "boxing"],
+                    "f1", "formula", "olympics", "nba", "nfl", "golf", "boxing", "premier",
+                    "league", "athletics", "cycling"],
         "culture": ["culture", "film", "films", "movies", "music", "books", "book", "art",
                     "arts", "entertainment", "tv", "television", "celebrity", "gaming",
-                    "games", "theatre"],
+                    "games", "theatre", "streaming", "design", "awards"],
         "life":    ["lifestyle", "food", "recipes", "travel", "fashion", "beauty", "home",
-                    "style", "relationships", "parenting"]
+                    "style", "relationships", "parenting", "fragrance"]
     ])
 
     /// Clusters whose audiences overlap (distance 0.5 rather than 1.0).
     private static let adjacent: Set<String> = [
-        "biz|pol", "pol|sci", "biz|tech", "sci|tech", "health|sci", "culture|life", "health|life"
+        "biz|pol", "pol|sci", "biz|tech", "sci|tech", "health|sci", "culture|life",
+        "health|life", "culture|tech", "biz|life", "pol|health"
     ]
 
     private static func clusterDistance(_ a: String, _ b: String) -> Double {
