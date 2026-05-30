@@ -50,10 +50,7 @@ struct MainTabView: View {
                 .tabItem { Label("Feed", systemImage: "newspaper") }
 
             TopicsView()
-                .tabItem { Label("Topics", systemImage: "pin") }
-
-            InterestsView()
-                .tabItem { Label("Interests", systemImage: "chart.bar") }
+                .tabItem { Label("Interests", systemImage: "heart.text.square") }
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }

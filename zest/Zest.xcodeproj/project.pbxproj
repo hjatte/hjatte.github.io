@@ -30,18 +30,17 @@
 		00000000000000000000002A /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000029 /* FeedView.swift */; };
 		00000000000000000000002C /* FlavourPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* FlavourPickerView.swift */; };
 		00000000000000000000002E /* NativeAdCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* NativeAdCardView.swift */; };
-		000000000000000000000030 /* InterestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* InterestsView.swift */; };
-		000000000000000000000032 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* OnboardingView.swift */; };
-		000000000000000000000034 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* RootView.swift */; };
-		000000000000000000000036 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* SafariView.swift */; };
-		000000000000000000000038 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* SettingsView.swift */; };
-		00000000000000000000003A /* SourceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000039 /* SourceBadge.swift */; };
-		00000000000000000000003C /* SwipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003B /* SwipeCardView.swift */; };
-		00000000000000000000003E /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003D /* TopicsView.swift */; };
-		000000000000000000000040 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003F /* Assets.xcassets */; };
-		000000000000000000000042 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000041 /* PrivacyInfo.xcprivacy */; };
-		000000000000000000000044 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000043 /* Readability.js */; };
-		000000000000000000000057 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000056 /* GoogleMobileAds */; };
+		000000000000000000000030 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* OnboardingView.swift */; };
+		000000000000000000000032 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* RootView.swift */; };
+		000000000000000000000034 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* SafariView.swift */; };
+		000000000000000000000036 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* SettingsView.swift */; };
+		000000000000000000000038 /* SourceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* SourceBadge.swift */; };
+		00000000000000000000003A /* SwipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000039 /* SwipeCardView.swift */; };
+		00000000000000000000003C /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003B /* TopicsView.swift */; };
+		00000000000000000000003E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003D /* Assets.xcassets */; };
+		000000000000000000000040 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003F /* PrivacyInfo.xcprivacy */; };
+		000000000000000000000042 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000041 /* Readability.js */; };
+		000000000000000000000055 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000054 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,33 +67,32 @@
 		000000000000000000000029 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeedView.swift"; path = "Zest/Views/FeedView.swift"; sourceTree = SOURCE_ROOT; };
 		00000000000000000000002B /* FlavourPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FlavourPickerView.swift"; path = "Zest/Views/FlavourPickerView.swift"; sourceTree = SOURCE_ROOT; };
 		00000000000000000000002D /* NativeAdCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NativeAdCardView.swift"; path = "Zest/Views/NativeAdCardView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002F /* InterestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "InterestsView.swift"; path = "Zest/Views/InterestsView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000031 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingView.swift"; path = "Zest/Views/OnboardingView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000033 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RootView.swift"; path = "Zest/Views/RootView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000035 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SafariView.swift"; path = "Zest/Views/SafariView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000037 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SettingsView.swift"; path = "Zest/Views/SettingsView.swift"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000039 /* SourceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SourceBadge.swift"; path = "Zest/Views/SourceBadge.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000003B /* SwipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SwipeCardView.swift"; path = "Zest/Views/SwipeCardView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000003D /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TopicsView.swift"; path = "Zest/Views/TopicsView.swift"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000003F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Assets.xcassets"; path = "Zest/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000041 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PrivacyInfo.xcprivacy"; path = "Zest/App/PrivacyInfo.xcprivacy"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000043 /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "Readability.js"; path = "Zest/Resources/Readability.js"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "Zest/App/Info.plist"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000046 /* Zest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000002F /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "OnboardingView.swift"; path = "Zest/Views/OnboardingView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000031 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "RootView.swift"; path = "Zest/Views/RootView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000033 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SafariView.swift"; path = "Zest/Views/SafariView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000035 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SettingsView.swift"; path = "Zest/Views/SettingsView.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000037 /* SourceBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SourceBadge.swift"; path = "Zest/Views/SourceBadge.swift"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000039 /* SwipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SwipeCardView.swift"; path = "Zest/Views/SwipeCardView.swift"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000003B /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TopicsView.swift"; path = "Zest/Views/TopicsView.swift"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000003D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Assets.xcassets"; path = "Zest/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000003F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PrivacyInfo.xcprivacy"; path = "Zest/App/PrivacyInfo.xcprivacy"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000041 /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "Readability.js"; path = "Zest/Resources/Readability.js"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000043 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "Zest/App/Info.plist"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000044 /* Zest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000004B /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (
-			000000000000000000000057 /* GoogleMobileAds in Frameworks */,
+		000000000000000000000049 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (
+			000000000000000000000055 /* GoogleMobileAds in Frameworks */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		000000000000000000000047 = {isa = PBXGroup; children = (
-			000000000000000000000048 /* Zest */,
-			000000000000000000000049 /* Products */,
+		000000000000000000000045 = {isa = PBXGroup; children = (
+			000000000000000000000046 /* Zest */,
+			000000000000000000000047 /* Products */,
 		); sourceTree = "<group>"; };
-		000000000000000000000048 /* Zest */ = {isa = PBXGroup; children = (
+		000000000000000000000046 /* Zest */ = {isa = PBXGroup; children = (
 			000000000000000000000001 /* WidgetHeadline.swift */,
 			000000000000000000000003 /* AppGroup.swift */,
 			000000000000000000000005 /* SharedStore.swift */,
@@ -118,46 +116,45 @@
 			000000000000000000000029 /* FeedView.swift */,
 			00000000000000000000002B /* FlavourPickerView.swift */,
 			00000000000000000000002D /* NativeAdCardView.swift */,
-			00000000000000000000002F /* InterestsView.swift */,
-			000000000000000000000031 /* OnboardingView.swift */,
-			000000000000000000000033 /* RootView.swift */,
-			000000000000000000000035 /* SafariView.swift */,
-			000000000000000000000037 /* SettingsView.swift */,
-			000000000000000000000039 /* SourceBadge.swift */,
-			00000000000000000000003B /* SwipeCardView.swift */,
-			00000000000000000000003D /* TopicsView.swift */,
-			00000000000000000000003F /* Assets.xcassets */,
-			000000000000000000000041 /* PrivacyInfo.xcprivacy */,
-			000000000000000000000043 /* Readability.js */,
-			000000000000000000000045 /* Info.plist */,
+			00000000000000000000002F /* OnboardingView.swift */,
+			000000000000000000000031 /* RootView.swift */,
+			000000000000000000000033 /* SafariView.swift */,
+			000000000000000000000035 /* SettingsView.swift */,
+			000000000000000000000037 /* SourceBadge.swift */,
+			000000000000000000000039 /* SwipeCardView.swift */,
+			00000000000000000000003B /* TopicsView.swift */,
+			00000000000000000000003D /* Assets.xcassets */,
+			00000000000000000000003F /* PrivacyInfo.xcprivacy */,
+			000000000000000000000041 /* Readability.js */,
+			000000000000000000000043 /* Info.plist */,
 		); name = Zest; sourceTree = "<group>"; };
-		000000000000000000000049 /* Products */ = {isa = PBXGroup; children = (
-			000000000000000000000046 /* Zest.app */,
+		000000000000000000000047 /* Products */ = {isa = PBXGroup; children = (
+			000000000000000000000044 /* Zest.app */,
 		); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00000000000000000000004D /* Zest */ = {isa = PBXNativeTarget; buildConfigurationList = 000000000000000000000050 /* Build configuration list for PBXNativeTarget "Zest" */; buildPhases = (
-			00000000000000000000004A /* Sources */,
-			00000000000000000000004B /* Frameworks */,
-			00000000000000000000004C /* Resources */,
-		); buildRules = (); dependencies = (); name = Zest; packageProductDependencies = (000000000000000000000056 /* GoogleMobileAds */, ); productName = Zest; productReference = 000000000000000000000046 /* Zest.app */; productType = "com.apple.product-type.application"; };
+		00000000000000000000004B /* Zest */ = {isa = PBXNativeTarget; buildConfigurationList = 00000000000000000000004E /* Build configuration list for PBXNativeTarget "Zest" */; buildPhases = (
+			000000000000000000000048 /* Sources */,
+			000000000000000000000049 /* Frameworks */,
+			00000000000000000000004A /* Resources */,
+		); buildRules = (); dependencies = (); name = Zest; packageProductDependencies = (000000000000000000000054 /* GoogleMobileAds */, ); productName = Zest; productReference = 000000000000000000000044 /* Zest.app */; productType = "com.apple.product-type.application"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		00000000000000000000004E /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {00000000000000000000004D = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = 00000000000000000000004F /* Build configuration list for PBXProject "Zest" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 000000000000000000000047; productRefGroup = 000000000000000000000049 /* Products */; projectDirPath = ""; projectRoot = ""; packageReferences = (000000000000000000000055 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */, ); targets = (00000000000000000000004D /* Zest */); };
+		00000000000000000000004C /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1520; LastUpgradeCheck = 1520; TargetAttributes = {00000000000000000000004B = {CreatedOnToolsVersion = 15.2;};};}; buildConfigurationList = 00000000000000000000004D /* Build configuration list for PBXProject "Zest" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = 000000000000000000000045; productRefGroup = 000000000000000000000047 /* Products */; projectDirPath = ""; projectRoot = ""; packageReferences = (000000000000000000000053 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */, ); targets = (00000000000000000000004B /* Zest */); };
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00000000000000000000004C /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
-			000000000000000000000040 /* Assets.xcassets in Resources */,
-			000000000000000000000042 /* PrivacyInfo.xcprivacy in Resources */,
-			000000000000000000000044 /* Readability.js in Resources */,
+		00000000000000000000004A /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
+			00000000000000000000003E /* Assets.xcassets in Resources */,
+			000000000000000000000040 /* PrivacyInfo.xcprivacy in Resources */,
+			000000000000000000000042 /* Readability.js in Resources */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00000000000000000000004A /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
+		000000000000000000000048 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 			000000000000000000000002 /* WidgetHeadline.swift in Sources */,
 			000000000000000000000004 /* AppGroup.swift in Sources */,
 			000000000000000000000006 /* SharedStore.swift in Sources */,
@@ -181,19 +178,18 @@
 			00000000000000000000002A /* FeedView.swift in Sources */,
 			00000000000000000000002C /* FlavourPickerView.swift in Sources */,
 			00000000000000000000002E /* NativeAdCardView.swift in Sources */,
-			000000000000000000000030 /* InterestsView.swift in Sources */,
-			000000000000000000000032 /* OnboardingView.swift in Sources */,
-			000000000000000000000034 /* RootView.swift in Sources */,
-			000000000000000000000036 /* SafariView.swift in Sources */,
-			000000000000000000000038 /* SettingsView.swift in Sources */,
-			00000000000000000000003A /* SourceBadge.swift in Sources */,
-			00000000000000000000003C /* SwipeCardView.swift in Sources */,
-			00000000000000000000003E /* TopicsView.swift in Sources */,
+			000000000000000000000030 /* OnboardingView.swift in Sources */,
+			000000000000000000000032 /* RootView.swift in Sources */,
+			000000000000000000000034 /* SafariView.swift in Sources */,
+			000000000000000000000036 /* SettingsView.swift in Sources */,
+			000000000000000000000038 /* SourceBadge.swift in Sources */,
+			00000000000000000000003A /* SwipeCardView.swift in Sources */,
+			00000000000000000000003C /* TopicsView.swift in Sources */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		000000000000000000000051 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+		00000000000000000000004F /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -248,7 +244,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			}; name = Debug; };
-		000000000000000000000052 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000050 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -299,12 +295,12 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			}; name = Release; };
-		000000000000000000000053 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000051 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -317,12 +313,12 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			}; name = Debug; };
-		000000000000000000000054 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
+		000000000000000000000052 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -338,23 +334,23 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00000000000000000000004F /* Build configuration list for PBXProject "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
+		00000000000000000000004D /* Build configuration list for PBXProject "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
+			00000000000000000000004F /* Debug */,
+			000000000000000000000050 /* Release */,
+		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		00000000000000000000004E /* Build configuration list for PBXNativeTarget "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
 			000000000000000000000051 /* Debug */,
 			000000000000000000000052 /* Release */,
-		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		000000000000000000000050 /* Build configuration list for PBXNativeTarget "Zest" */ = {isa = XCConfigurationList; buildConfigurations = (
-			000000000000000000000053 /* Debug */,
-			000000000000000000000054 /* Release */,
 		); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		000000000000000000000055 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git"; requirement = {kind = exactVersion; version = 11.13.0; }; };
+		000000000000000000000053 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git"; requirement = {kind = exactVersion; version = 11.13.0; }; };
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		000000000000000000000056 /* GoogleMobileAds */ = {isa = XCSwiftPackageProductDependency; package = 000000000000000000000055 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */; productName = GoogleMobileAds; };
+		000000000000000000000054 /* GoogleMobileAds */ = {isa = XCSwiftPackageProductDependency; package = 000000000000000000000053 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */; productName = GoogleMobileAds; };
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 00000000000000000000004E /* Project object */;
+	rootObject = 00000000000000000000004C /* Project object */;
 }

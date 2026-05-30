@@ -150,11 +150,13 @@ final class InterestStore: ObservableObject {
             .filter { $0.count >= 2 }
     }
 
+    /// Clears learned interests and reading history. Keeps pinned topics.
     func reset() {
         profile = InterestProfile()
         seenIDs = []
-        pinnedTags = []
         shownIDs = []
+        // Re-seed the pinned topics so they still register as interests.
+        for tag in pinnedTags { profile.apply(.onboardingLike, tags: [tag], now: decayNow) }
         persist()
     }
 

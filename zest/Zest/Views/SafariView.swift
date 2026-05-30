@@ -124,6 +124,7 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
 struct ArticleReaderView: View {
     let url: URL
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("readerOpenMode") private var openMode = ReaderOpenMode.reader.rawValue
     @StateObject private var model: ReaderModel
     @State private var readerMode = true
 
@@ -135,8 +136,11 @@ struct ArticleReaderView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             Color(.systemBackground).ignoresSafeArea()          // keeps the clock readable
+            // Hide the page until the final content is ready, so we never flash
+            // the raw web page before Reader mode kicks in.
             WebViewHolder(webView: model.webView)
                 .ignoresSafeArea(edges: .bottom)
+                .opacity(model.isLoading ? 0 : 1)
             if model.isLoading { ProgressView().controlSize(.large) }
 
             HStack {
@@ -154,7 +158,10 @@ struct ArticleReaderView: View {
             .padding(.horizontal, 22)
             .padding(.bottom, 6)
         }
-        .task { model.showReader() }
+        .task {
+            readerMode = (openMode != ReaderOpenMode.web.rawValue)
+            readerMode ? model.showReader() : model.showWeb()
+        }
     }
 
     private func control(_ systemName: String, action: @escaping () -> Void) -> some View {

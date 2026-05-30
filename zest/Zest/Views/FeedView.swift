@@ -10,6 +10,8 @@ struct FeedView: View {
     @State private var searchText = ""
     @State private var isRefreshing = false
     @State private var scrollProxy: ScrollViewProxy?
+    @State private var lastOpened: Article?
+    @State private var learnToast: [String]?
 
     init(client: NewsAPIClient, pendingURL: Binding<URL?>) {
         _vm = StateObject(wrappedValue: FeedViewModel(client: client, store: InterestStore.shared))
@@ -54,8 +56,35 @@ struct FeedView: View {
         .onChange(of: pendingURL) { _, url in
             if let url { reader = ReaderLink(url: url); pendingURL = nil }
         }
-        .fullScreenCover(item: $reader) { link in
+        .fullScreenCover(item: $reader, onDismiss: announceLearning) { link in
             ArticleReaderView(url: link.url)
+        }
+        .overlay(alignment: .bottom) {
+            if let tags = learnToast, !tags.isEmpty {
+                HStack(spacing: 8) {
+                    Image(systemName: "brain.head.profile").foregroundStyle(.tint)
+                    Text("Learning your interest in \(tags.joined(separator: ", "))")
+                        .font(.footnote.weight(.medium)).lineLimit(2)
+                }
+                .padding(.horizontal, 14).padding(.vertical, 10)
+                .background(.ultraThinMaterial, in: Capsule())
+                .overlay(Capsule().strokeBorder(.quaternary))
+                .shadow(radius: 6, y: 3)
+                .padding(.horizontal, 24).padding(.bottom, 10)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+    }
+
+    private func announceLearning() {
+        guard let article = lastOpened else { return }
+        let src = (article.pillar ?? "").lowercased().split(separator: " ").first.map(String.init) ?? ""
+        let tags = article.tags.filter { $0 != src && $0 != "news" }.prefix(3).map { TagChips.display($0) }
+        guard !tags.isEmpty else { return }
+        withAnimation(.spring) { learnToast = tags }
+        Task {
+            try? await Task.sleep(nanoseconds: 2_400_000_000)
+            withAnimation { learnToast = nil }
         }
     }
 
@@ -147,6 +176,7 @@ struct FeedView: View {
     private func open(_ article: Article) {
         // Clicking is the strongest interest signal — your "+10" example.
         store.record(.openArticle, for: article)
+        lastOpened = article
         if let url = URL(string: article.url) { reader = ReaderLink(url: url) }
     }
 }

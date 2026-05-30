@@ -6,20 +6,36 @@ struct TopicsView: View {
     @EnvironmentObject private var store: InterestStore
     @State private var newTopic = ""
 
+    /// What Zesty has learned you like, from your swipes and what you read.
+    private var learned: [String] {
+        store.topTags(limit: 10).map(\.tag).filter { !store.pinnedTags.contains($0) }
+    }
+
     /// Quick-add suggestions: feed categories plus a few popular topics,
-    /// minus anything already pinned.
+    /// minus anything already pinned or already shown as "learned".
     private var suggestions: [String] {
         let categories = Set(FeedCatalog.all.map(\.category))
         let popular: Set<String> = ["ukraine", "ai", "climate", "election", "apple",
                                     "space", "economy", "football", "health", "energy"]
         return categories.union(popular)
             .subtracting(store.pinnedTags)
+            .subtracting(learned)
             .sorted()
     }
 
     var body: some View {
         NavigationStack {
             List {
+                if !learned.isEmpty {
+                    Section {
+                        chipGrid(learned, icon: "plus")
+                    } header: {
+                        Text("Learned from what you read")
+                    } footer: {
+                        Text("Zesty grows these from the stories you open and swipe. Tap any to pin it so it always stays near the top.")
+                    }
+                }
+
                 Section {
                     HStack {
                         TextField("Add a topic — e.g. climate, arsenal, ai", text: $newTopic)
@@ -51,26 +67,28 @@ struct TopicsView: View {
                     }
                 }
 
-                Section("Suggestions") {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
-                              alignment: .leading, spacing: 8) {
-                        ForEach(suggestions, id: \.self) { topic in
-                            Button {
-                                store.pin(topic)
-                            } label: {
-                                Label(topic, systemImage: "plus")
-                                    .font(.caption).lineLimit(1)
-                                    .padding(.horizontal, 10).padding(.vertical, 6)
-                                    .background(.quaternary, in: Capsule())
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 4)
+                Section("More to explore") {
+                    chipGrid(suggestions, icon: "plus")
                 }
             }
-            .navigationTitle("Topics")
+            .navigationTitle("Interests")
         }
+    }
+
+    private func chipGrid(_ topics: [String], icon: String) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 8)],
+                  alignment: .leading, spacing: 8) {
+            ForEach(topics, id: \.self) { topic in
+                Button { store.pin(topic) } label: {
+                    Label(topic, systemImage: icon)
+                        .font(.caption).lineLimit(1)
+                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .background(.quaternary, in: Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     private func add() {

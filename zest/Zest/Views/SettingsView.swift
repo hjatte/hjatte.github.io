@@ -1,8 +1,18 @@
 import SwiftUI
 
+/// How taps on a story open it. Stored in UserDefaults via @AppStorage.
+enum ReaderOpenMode: String, CaseIterable, Identifiable {
+    case reader, web
+    var id: String { rawValue }
+    var label: String { self == .reader ? "Reader" : "Web page" }
+}
+
 struct SettingsView: View {
+    @EnvironmentObject private var store: InterestStore
     @StateObject private var sources = SourceSettings.shared
     @StateObject private var theme = ThemeSettings.shared
+    @AppStorage("readerOpenMode") private var openMode = ReaderOpenMode.reader.rawValue
+    @State private var confirmingReset = false
 
     var body: some View {
         NavigationStack {
@@ -21,6 +31,17 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Picker("Open articles in", selection: $openMode) {
+                        ForEach(ReaderOpenMode.allCases) { Text($0.label).tag($0.rawValue) }
+                    }
+                    .pickerStyle(.segmented)
+                } header: {
+                    Text("Reading")
+                } footer: {
+                    Text("Reader shows a clean, ad-free version of each story. Web shows the original page. You can also switch per-article while reading.")
+                }
+
+                Section {
                     NavigationLink {
                         SourcesView()
                     } label: {
@@ -33,6 +54,12 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Button("Reset learned interests", role: .destructive) { confirmingReset = true }
+                } footer: {
+                    Text("Clears everything Zesty has learned and your reading history. Pinned topics and your flavour are kept.")
+                }
+
+                Section {
                     LabeledContent("Version", value: appVersion)
                 } header: {
                     Text("About")
@@ -41,6 +68,10 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .confirmationDialog("Reset learned interests?", isPresented: $confirmingReset, titleVisibility: .visible) {
+                Button("Reset", role: .destructive) { store.reset() }
+                Button("Cancel", role: .cancel) {}
+            }
         }
     }
 

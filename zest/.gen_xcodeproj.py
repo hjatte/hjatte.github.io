@@ -29,7 +29,6 @@ SOURCES = [
     "Zest/Views/FeedView.swift",
     "Zest/Views/FlavourPickerView.swift",
     "Zest/Views/NativeAdCardView.swift",
-    "Zest/Views/InterestsView.swift",
     "Zest/Views/OnboardingView.swift",
     "Zest/Views/RootView.swift",
     "Zest/Views/SafariView.swift",
@@ -207,7 +206,7 @@ TARGET_COMMON = """\t\t\t\tASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 \t\t\t\tASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 \t\t\t\tCODE_SIGN_ENTITLEMENTS = "Zest/App/Zest.entitlements";
 \t\t\t\tCODE_SIGN_STYLE = Automatic;
-\t\t\t\tCURRENT_PROJECT_VERSION = 21;
+\t\t\t\tCURRENT_PROJECT_VERSION = 22;
 \t\t\t\tDEVELOPMENT_TEAM = "";
 \t\t\t\tENABLE_PREVIEWS = YES;
 \t\t\t\tGENERATE_INFOPLIST_FILE = NO;
