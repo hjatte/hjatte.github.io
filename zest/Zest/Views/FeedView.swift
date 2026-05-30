@@ -153,7 +153,8 @@ struct FeedView: View {
                             open(article)
                         } label: {
                             ArticleRow(article: article,
-                                       isPinned: article.tags.contains(where: store.pinnedTags.contains))
+                                       isPinned: article.tags.contains(where: store.pinnedTags.contains),
+                                       outsideBubble: isOutsideBubble(article))
                         }
                         .buttonStyle(.plain)
                         .onAppear { store.markShown(article) }
@@ -195,6 +196,14 @@ struct FeedView: View {
         .listRowSeparator(.hidden)
     }
 
+    /// The user's strongest topics, used for bubble-distance.
+    private var interestTokens: [String] { store.topTags(limit: 10).map(\.tag) }
+
+    /// True when a story sits well outside the user's usual topics.
+    private func isOutsideBubble(_ article: Article) -> Bool {
+        !interestTokens.isEmpty && TopicGraph.distance(article.tags, from: interestTokens) >= 1.0
+    }
+
     /// Explains why an article is in the feed, from on-device signals.
     private func whyReason(for article: Article) -> String {
         let pinned = article.tags.filter(store.pinnedTags.contains).prefix(2).map { TagChips.display($0) }
@@ -206,8 +215,10 @@ struct FeedView: View {
             line = "You pinned \(pinned.joined(separator: ", "))."
         } else if !matches.isEmpty {
             line = "It matches your interest in \(matches.joined(separator: ", "))."
+        } else if isOutsideBubble(article) {
+            line = "A story from outside your usual topics — surfaced by your Serendipity setting to broaden your feed."
         } else {
-            line = "A fresh pick to broaden your feed beyond your usual topics."
+            line = "A fresh, timely story we think you'll want to see."
         }
         return line + "\n\nFrom \(article.pillar ?? article.section.capitalized)."
     }
@@ -248,6 +259,7 @@ private enum FeedItem: Identifiable {
 struct ArticleRow: View {
     let article: Article
     var isPinned = false
+    var outsideBubble = false
 
     /// Topic tags worth showing — drops the publisher slug and generic words.
     private var displayTags: [String] {
@@ -266,6 +278,13 @@ struct ArticleRow: View {
                             domain: URL(string: article.url)?.host)
                 if isPinned {
                     Image(systemName: "pin.fill").font(.caption2).foregroundStyle(.tint)
+                }
+                if outsideBubble {
+                    Label("Beyond your bubble", systemImage: "safari")
+                        .font(.caption2.weight(.semibold))
+                        .padding(.horizontal, 7).padding(.vertical, 3)
+                        .background(.tint.opacity(0.15), in: Capsule())
+                        .foregroundStyle(.tint)
                 }
                 Spacer()
                 Text(article.publishedAt, format: .relative(presentation: .named))

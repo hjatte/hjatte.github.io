@@ -14,6 +14,7 @@ enum FeedRanker {
         profile: InterestProfile,
         seenIDs: Set<String>,
         pinnedTags: Set<String> = [],
+        interestTopics: [String] = [],
         now: Date = .now,
         explorationEpsilon: Double = 4
     ) -> [Article] {
@@ -23,8 +24,6 @@ enum FeedRanker {
 
                 // Pinned topics get a strong, non-decaying boost so the things
                 // the user explicitly cares about reliably rise to the top.
-                // Boost exceeds the max possible learned score so a pinned
-                // topic reliably beats even the most-engaged learned one.
                 let pinnedHits = article.tags.filter(pinnedTags.contains).count
                 let pinnedBoost = pinnedHits > 0 ? 200.0 + Double(pinnedHits - 1) * 30 : 0
 
@@ -33,7 +32,11 @@ enum FeedRanker {
 
                 let seenPenalty = seenIDs.contains(article.id) ? 30.0 : 0
 
-                let exploration = Double.random(in: 0...explorationEpsilon)
+                // Bubble-aware exploration: the serendipity dial lifts stories by
+                // how far outside your usual topics they are (via TopicGraph), so
+                // turning it up surfaces related-but-different areas — not noise.
+                let bubbleDistance = TopicGraph.distance(article.tags, from: interestTopics)
+                let exploration = explorationEpsilon * bubbleDistance + Double.random(in: 0...2)
 
                 return (article, interest + pinnedBoost + recency - seenPenalty + exploration)
             }

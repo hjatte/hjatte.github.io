@@ -55,6 +55,7 @@ final class FeedViewModel: ObservableObject {
             let ranked = Array(
                 FeedRanker.rank(fresh, profile: store.profile,
                                 seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
+                                interestTopics: interests,
                                 now: store.decayNow, explorationEpsilon: explorationEpsilon)
                     .prefix(maxFeed)
             )
