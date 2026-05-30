@@ -1,9 +1,10 @@
 # Zesty — project guide for Claude Code
 
 Zesty is a personalised news app for iPhone & iPad (SwiftUI, iOS 17+). It learns
-the user's interests and builds a relevance-ranked feed from free RSS sources,
-with native ads, theming, and iCloud sync. This file orients a Claude Code
-session working on the repo locally.
+the reader's interests, optimises for *reading completion* (not clicks), and
+deliberately breaks the filter bubble. No backend — everything is on-device,
+with iCloud key-value sync. This file orients a Claude Code session working on
+the repo. **Currently at build 25.**
 
 ## Where things live
 
@@ -12,57 +13,81 @@ Everything is under `zest/`:
 - `zest/Zest.xcodeproj` — **generated**, committed so it opens by double-click.
 - `zest/.gen_xcodeproj.py` — the generator. **Do not hand-edit `project.pbxproj`.**
   Edit this script, then run `python3 zest/.gen_xcodeproj.py` to regenerate.
-- `zest/project.yml` — XcodeGen spec (alternate generator, kept in sync).
+- `zest/project.yml` — XcodeGen spec (kept in sync; alternate generator).
 - `zest/Zest/` — the app (App, Models, Engine, Services, ViewModels, Views).
 - `zest/Shared/` — code shared with the (not-yet-included) widget.
+- `zest/Zest/Resources/Readability.js` — bundled Mozilla Readability for the reader.
 - `zest/ZestWidget/`, `zest/ZestTests/` — widget + tests (NOT in the single-target
-  generated project; app-only for reliability).
-- Guides: `README.md`, `GETTING_STARTED.md`, `TESTFLIGHT.md`.
+  generated project; app-only for build reliability).
 
 ## Critical workflow rules
 
-1. **Adding/removing a Swift file** → add its path to `SOURCES` in
-   `.gen_xcodeproj.py`, then regenerate. Forgetting this causes
-   "Cannot find <Type> in scope" build errors.
-2. **Every change destined for TestFlight** → bump `CURRENT_PROJECT_VERSION`
-   in both `.gen_xcodeproj.py` and `project.yml`, then regenerate. Apple rejects
-   duplicate build numbers. (Currently at build 9.)
+1. **Add/remove a Swift file** → update `SOURCES` in `.gen_xcodeproj.py`, then
+   regenerate. Forgetting → "Cannot find <Type> in scope".
+2. **Every change for TestFlight** → bump `CURRENT_PROJECT_VERSION` in both
+   `.gen_xcodeproj.py` and `project.yml`, then regenerate. (Apple rejects
+   duplicate build numbers.)
 3. After regenerating, sanity-check the pbxproj: all 24-hex IDs referenced are
-   defined, and `{`/`}` are balanced.
-4. The app target is single-target on purpose (no widget/tests target) to keep
-   the hand-generated project reliable.
+   defined, braces balanced. (The generator does this implicitly; a quick Python
+   check is wise after edits.)
+4. App is single-target on purpose (no widget/tests target).
 
-## Key conventions
+## Architecture
 
-- **Theming**: `Flavour` (Services/ThemeSettings.swift) sets accent + light/dark;
-  applied app-wide in `RootView` via `.tint` + `.preferredColorScheme`. Picked in
-  `FlavourPickerView` (first-launch + Settings).
-- **Learning engine**: `InterestProfile` (tag weights, exponential decay,
-  impression fade), `InterestStore` (persistence + iCloud key-value sync, single
-  source of truth, `.shared`), `FeedRanker` (interest + recency + pinned + a
-  little exploration; pinned topics get a large non-decaying boost).
-- **News**: `RSSClient` aggregates ~75 free feeds (`FeedCatalog`), browser-style
-  request headers to avoid bot-blocking, capped concurrency, per-feed failures
-  swallowed. `FeedViewModel` caches the ranked feed (offline + instant load) and
-  drops already-read articles on refresh.
-- **Ads**: AdMob native ads via `NativeAdLoader` + `NativeAdCardView`, mixed into
-  the feed every 8 stories. `AdConfig.useTestAds = true` while on TestFlight —
-  flip to false only once live on the App Store. App ID is in `Info.plist`
-  (`GADApplicationIdentifier`).
-- **Reader**: `ArticleReaderView` (Views/SafariView.swift) is a WKWebView with a
-  Back button (bottom-left) and Share (bottom-right).
+- **Learning engine** (`Zest/Engine/`):
+  - `InterestProfile` — tag→weight with exponential decay + impression fade.
+  - `InterestStore` (`.shared`) — source of truth; persistence + **iCloud KVS**
+    sync; tracks `seenIDs` (read), `shownIDs` (scrolled past), `pinnedTags`.
+    Decay runs on an **active-day clock** (`decayNow`): half-life counts only
+    days the app is opened, not calendar days.
+  - `FeedRanker` — score = interest + pinned boost + **recency (real wall-clock
+    time!)** − seen penalty + bubble-aware exploration; then **MMR diversity**
+    and a **civic quota**. `decayDate` is ONLY for interest decay; recency uses
+    `Date()`.
+  - `TopicGraph` — curated clusters of news topics → 0–1 "bubble distance" for
+    serendipity/exploration. (Hand-curated; MIND is *not* wired in.)
+  - Signals (`InteractionEvent`): **completion-first** — `openArticle` = 0
+    (a click is gameable), `readToEnd` (~70% scrolled, tracked in the reader)
+    = +10. Onboarding like/dislike ±. `hideArticle` = strong negative.
+- **News** (`Zest/Services/`): `RSSClient` aggregates ~75 free feeds
+  (`FeedCatalog`) with a browser User-Agent (avoids bot-blocking), capped
+  concurrency, per-feed failures swallowed. `RSSParser` (RSS+Atom).
+  `FeedViewModel` caches the ranked feed (instant + offline), drops read and
+  scrolled-past stories on refresh (unless strongly matching).
+- **Ads**: AdMob native ads via `NativeAdLoader` + `NativeAdCardView`, every 8
+  stories. SDK is the **GoogleMobileAds Swift Package pinned to exact 11.13.0**
+  (GAD-prefixed API) with a committed `Package.resolved`. `AdConfig.useTestAds
+  = true` (test ads) until live. App id in `Info.plist` (`GADApplicationIdentifier`).
+- **Theming**: `Flavour` (6 light + 6 dark) in `ThemeSettings`; picked in
+  `FlavourPickerView` (first launch + Settings); applied app-wide via `.tint` +
+  `.preferredColorScheme` in `RootView`.
+- **Reader**: `ArticleReaderView` (`Views/SafariView.swift`) — custom WKWebView
+  that extracts a clean article via Readability; Reader/Web setting + per-article
+  toggle; light/dark toggle; tracks read fraction for the completion signal.
+- **UI**: Feed has a "Zesty News" header with a drawn lemon refresh button,
+  "Why am I seeing this?" (long-press), a "Beyond your bubble" section/badges,
+  a learning toast after reading, and a "You're all caught up" footer. Tabs:
+  **Feed · Interests · Settings**. Interests tab (`TopicsView`) shows learned
+  interests with Yes/Less/Not-interested + pin + suggestions. Settings has
+  flavour, reader mode, a **Serendipity dial**, sources, reset.
+
+## Onboarding flow
+
+`RootView` gates: pick a flavour → welcome card → swipe a fixed list of **10
+varied sample stories** (`Article.onboardingSamples`, no network) → "you're all
+set". No lemon emojis/graphics by request.
 
 ## Build / run / ship
 
 - Open `zest/Zest.xcodeproj`, pick an iPhone simulator, ⌘R.
+- First build resolves the GoogleMobileAds package (needs network). If "Missing
+  package product 'GoogleMobileAds'": File → Packages → Reset Package Caches.
 - TestFlight: device = "Any iOS Device", Product → Archive → Distribute →
-  App Store Connect → Upload. App is "Zest News" in App Store Connect; display
-  name is "Zesty"; bundle id `com.hjatte.zest`.
-- The Google Mobile Ads SDK is an SPM dependency; first build resolves it
-  (needs network). If "Missing package product 'GoogleMobileAds'": File →
-  Packages → Reset Package Caches.
+  App Store Connect → Upload. ASC app is "Zest News"; display name "Zesty";
+  bundle id `com.hjatte.zest`.
 
 ## Cannot be done from a cloud container
 
-Building, archiving, and TestFlight uploads require Xcode on the Mac — do those
-locally. A cloud session can only edit code and push to GitHub.
+Building, archiving and TestFlight uploads require Xcode on the Mac. A cloud
+session can only edit code and push to GitHub. MIND and most non-GitHub hosts
+are network-blocked in the cloud sandbox.
