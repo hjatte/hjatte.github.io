@@ -28,11 +28,25 @@ struct TopicsView: View {
             List {
                 if !learned.isEmpty {
                     Section {
-                        chipGrid(learned, icon: "plus")
+                        ForEach(learned, id: \.self) { tag in
+                            HStack {
+                                Text("You seem interested in ") + Text(tag).bold()
+                                Spacer()
+                                Menu {
+                                    Button { store.pin(tag) } label: { Label("Yes — pin it", systemImage: "pin") }
+                                    Button { store.less(tag) } label: { Label("Less of this", systemImage: "hand.thumbsdown") }
+                                    Button(role: .destructive) { store.suppress(tag) } label: {
+                                        Label("Not interested", systemImage: "xmark")
+                                    }
+                                } label: {
+                                    Image(systemName: "ellipsis.circle").foregroundStyle(.tint)
+                                }
+                            }
+                        }
                     } header: {
                         Text("Learned from what you read")
                     } footer: {
-                        Text("Zesty grows these from the stories you open and swipe. Tap any to pin it so it always stays near the top.")
+                        Text("Zesty grows these from the stories you actually read. Tap ••• to confirm, see less, or remove one.")
                     }
                 }
 

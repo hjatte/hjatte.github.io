@@ -17,6 +17,12 @@ final class FeedViewModel: ObservableObject {
     private let cacheKey = "feed.cache.v1"
     private let maxFeed = 200
 
+    /// User-controlled exploration ("serendipity" dial, 0…1) → ranking noise.
+    private var explorationEpsilon: Double {
+        let s = UserDefaults.standard.object(forKey: "serendipity") as? Double ?? 0.3
+        return s * 30
+    }
+
     init(client: NewsAPIClient, store: InterestStore) {
         self.client = client
         self.store = store
@@ -49,7 +55,7 @@ final class FeedViewModel: ObservableObject {
             let ranked = Array(
                 FeedRanker.rank(fresh, profile: store.profile,
                                 seenIDs: store.seenIDs, pinnedTags: store.pinnedTags,
-                                now: store.decayNow)
+                                now: store.decayNow, explorationEpsilon: explorationEpsilon)
                     .prefix(maxFeed)
             )
 

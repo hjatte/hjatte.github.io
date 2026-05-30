@@ -12,6 +12,7 @@ struct SettingsView: View {
     @StateObject private var sources = SourceSettings.shared
     @StateObject private var theme = ThemeSettings.shared
     @AppStorage("readerOpenMode") private var openMode = ReaderOpenMode.reader.rawValue
+    @AppStorage("serendipity") private var serendipity = 0.3
     @State private var confirmingReset = false
 
     var body: some View {
@@ -51,6 +52,23 @@ struct SettingsView: View {
                     Text("Where your news comes from")
                 } footer: {
                     Text("Zesty aggregates free, open RSS feeds from multiple publishers — no account or API key needed. Turn sources on or off to shape your mix.")
+                }
+
+                Section {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("Serendipity")
+                            Spacer()
+                            Text(serendipity < 0.25 ? "Familiar"
+                                 : serendipity > 0.7 ? "Adventurous" : "Balanced")
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $serendipity, in: 0...1)
+                    }
+                } header: {
+                    Text("Discovery")
+                } footer: {
+                    Text("How often Zesty reaches outside your usual topics. Higher = more variety and surprises in your feed.")
                 }
 
                 Section {

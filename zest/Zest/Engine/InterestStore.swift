@@ -143,6 +143,19 @@ final class InterestStore: ObservableObject {
 
     func isPinned(_ tag: String) -> Bool { pinnedTags.contains(tag) }
 
+    /// "Less of this" — gently reduce a learned interest.
+    func less(_ tag: String) {
+        profile.apply(.onboardingDislike, tags: [tag], now: decayNow)
+        persist()
+    }
+
+    /// "Not interested" — strongly suppress a tag and unpin it.
+    func suppress(_ tag: String) {
+        pinnedTags.remove(tag)
+        profile.apply(.hideArticle, tags: [tag], now: decayNow)
+        persist()
+    }
+
     static func tokenize(_ raw: String) -> [String] {
         raw.lowercased()
             .split { $0 == " " || $0 == "-" || $0 == "," }

@@ -12,6 +12,7 @@ struct FeedView: View {
     @State private var scrollProxy: ScrollViewProxy?
     @State private var lastOpened: Article?
     @State private var learnToast: [String]?
+    @State private var whyText: String?
 
     init(client: NewsAPIClient, pendingURL: Binding<URL?>) {
         _vm = StateObject(wrappedValue: FeedViewModel(client: client, store: InterestStore.shared))
@@ -56,9 +57,19 @@ struct FeedView: View {
         .onChange(of: pendingURL) { _, url in
             if let url { reader = ReaderLink(url: url); pendingURL = nil }
         }
-        .fullScreenCover(item: $reader, onDismiss: announceLearning) { link in
-            ArticleReaderView(url: link.url)
+        .fullScreenCover(item: $reader) { link in
+            ArticleReaderView(url: link.url) { fraction in
+                // Only count it as a positive if they actually read ~70%+.
+                guard fraction >= 0.7, let article = lastOpened else { return }
+                store.record(.readToEnd, for: article)
+                announceLearning()
+            }
         }
+        .alert("Why you're seeing this", isPresented: Binding(
+            get: { whyText != nil }, set: { if !$0 { whyText = nil } }
+        ), presenting: whyText) { _ in
+            Button("OK", role: .cancel) {}
+        } message: { Text($0) }
         .overlay(alignment: .bottom) {
             if let tags = learnToast, !tags.isEmpty {
                 HStack(spacing: 8) {
@@ -134,31 +145,71 @@ struct FeedView: View {
 
     private var list: some View {
         ScrollViewReader { proxy in
-            List(feedItems) { item in
-                switch item {
-                case .article(let article):
-                    Button {
-                        open(article)
-                    } label: {
-                        ArticleRow(article: article,
-                                   isPinned: article.tags.contains(where: store.pinnedTags.contains))
+            List {
+                ForEach(feedItems) { item in
+                    switch item {
+                    case .article(let article):
+                        Button {
+                            open(article)
+                        } label: {
+                            ArticleRow(article: article,
+                                       isPinned: article.tags.contains(where: store.pinnedTags.contains))
+                        }
+                        .buttonStyle(.plain)
+                        .onAppear { store.markShown(article) }
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                store.record(.hideArticle, for: article)
+                                vm.reorder()
+                            } label: { Label("Less", systemImage: "hand.thumbsdown") }
+                        }
+                        .contextMenu {
+                            Button { whyText = whyReason(for: article) } label: {
+                                Label("Why am I seeing this?", systemImage: "questionmark.circle")
+                            }
+                            Button(role: .destructive) {
+                                store.record(.hideArticle, for: article)
+                                vm.reorder()
+                            } label: { Label("Show me less like this", systemImage: "hand.thumbsdown") }
+                        }
+                    case .ad:
+                        NativeAdSlot()
                     }
-                    .buttonStyle(.plain)
-                    .onAppear { store.markShown(article) }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            store.record(.hideArticle, for: article)
-                            vm.reorder()
-                        } label: { Label("Less", systemImage: "hand.thumbsdown") }
-                    }
-                case .ad:
-                    NativeAdSlot()
                 }
+                caughtUpFooter
             }
             .listStyle(.plain)
             .refreshable { await vm.refresh() }
             .onAppear { scrollProxy = proxy }
         }
+    }
+
+    private var caughtUpFooter: some View {
+        VStack(spacing: 6) {
+            Image(systemName: "checkmark.circle").font(.title2).foregroundStyle(.green)
+            Text("You're all caught up").font(.subheadline.weight(.semibold))
+            Text("Pull down to check for fresh stories.").font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 28)
+        .listRowSeparator(.hidden)
+    }
+
+    /// Explains why an article is in the feed, from on-device signals.
+    private func whyReason(for article: Article) -> String {
+        let pinned = article.tags.filter(store.pinnedTags.contains).prefix(2).map { TagChips.display($0) }
+        let top = Set(store.topTags(limit: 25).map(\.tag))
+        let matches = article.tags.filter { top.contains($0) }.prefix(3).map { TagChips.display($0) }
+
+        var line: String
+        if !pinned.isEmpty {
+            line = "You pinned \(pinned.joined(separator: ", "))."
+        } else if !matches.isEmpty {
+            line = "It matches your interest in \(matches.joined(separator: ", "))."
+        } else {
+            line = "A fresh pick to broaden your feed beyond your usual topics."
+        }
+        return line + "\n\nFrom \(article.pillar ?? article.section.capitalized)."
     }
 
     /// Tapping the lemon: jump to the top, then refresh (with the icon spinning).

@@ -10,17 +10,17 @@ struct ReaderLink: Identifiable {
 /// Owns the web view and turns the loaded page into a clean reader article
 /// using Mozilla's Readability. Falls back to the plain page if extraction fails.
 /// (All WebKit callbacks arrive on the main thread.)
-final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
+final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate, UIScrollViewDelegate {
     let webView = WKWebView()
     @Published var isLoading = true
 
     private let url: URL
     private let readabilityJS: String
-    /// True while we still need to extract reader content from the loaded page.
     private var pendingExtraction = false
-    /// Reader light/dark, defaulting to the app flavour; toggled by the user.
     var dark: Bool = ThemeSettings.shared.flavour.dark
     private var lastExtracted: (title: String, byline: String, content: String)?
+    /// Deepest fraction of the article scrolled into view (0…1).
+    private var maxReadFraction: Double = 0
 
     init(url: URL) {
         self.url = url
@@ -32,7 +32,20 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
         }
         super.init()
         webView.navigationDelegate = self
+        webView.scrollView.delegate = self
     }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        maxReadFraction = max(maxReadFraction, fraction(of: scrollView))
+    }
+
+    private func fraction(of sv: UIScrollView) -> Double {
+        let denom = max(sv.contentSize.height, 1)
+        return min(max((sv.contentOffset.y + sv.bounds.height) / denom, 0), 1)
+    }
+
+    /// How much of the article was read (handles short, non-scrolling articles).
+    func readProgress() -> Double { max(maxReadFraction, fraction(of: webView.scrollView)) }
 
     func showReader() { pendingExtraction = true;  isLoading = true; webView.load(URLRequest(url: url)) }
     func showWeb()    { pendingExtraction = false; isLoading = true; webView.load(URLRequest(url: url)) }
@@ -123,13 +136,16 @@ final class ReaderModel: NSObject, ObservableObject, WKNavigationDelegate {
 /// Done (back to the app) · Reader/Web toggle · Share.
 struct ArticleReaderView: View {
     let url: URL
+    /// Called when the reader closes, with how much of the article was read (0…1).
+    var onClose: (Double) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
     @AppStorage("readerOpenMode") private var openMode = ReaderOpenMode.reader.rawValue
     @StateObject private var model: ReaderModel
     @State private var readerMode = true
 
-    init(url: URL) {
+    init(url: URL, onClose: @escaping (Double) -> Void = { _ in }) {
         self.url = url
+        self.onClose = onClose
         _model = StateObject(wrappedValue: ReaderModel(url: url))
     }
 
@@ -162,6 +178,7 @@ struct ArticleReaderView: View {
             readerMode = (openMode != ReaderOpenMode.web.rawValue)
             readerMode ? model.showReader() : model.showWeb()
         }
+        .onDisappear { onClose(model.readProgress()) }
     }
 
     private func control(_ systemName: String, action: @escaping () -> Void) -> some View {

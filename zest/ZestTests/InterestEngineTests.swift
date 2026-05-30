@@ -11,11 +11,17 @@ final class InterestEngineTests: XCTestCase {
                 publishedAt: .now, tags: tags)
     }
 
-    func testClickBoostsTagsByTen() {
+    func testReadingBoostsTagsByTen() {
         var profile = InterestProfile()
-        profile.apply(.openArticle, tags: ["uk", "politics"])
+        profile.apply(.readToEnd, tags: ["uk", "politics"])
         XCTAssertEqual(profile.effectiveScore("uk"), 10, accuracy: 0.001)
         XCTAssertEqual(profile.effectiveScore("politics"), 10, accuracy: 0.001)
+    }
+
+    func testMereClickScoresNothing() {
+        var profile = InterestProfile()
+        profile.apply(.openArticle, tags: ["uk"])
+        XCTAssertEqual(profile.effectiveScore("uk"), 0, accuracy: 0.001)
     }
 
     func testDislikeSuppresses() {
