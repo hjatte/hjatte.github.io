@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vesper — Support</title>
+  <meta name="description" content="Help, FAQs and contact for Vesper, the tarot and horoscope app." />
+  <style>
+    :root {
+      --bg: #0c0c16;
+      --surface: #16162a;
+      --accent: #e7dcc0;
+      --accent2: #d9a6a6;
+      --text: #f2ede2;
+      --muted: #9a95ab;
+      --border: #26263f;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 96px; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .brand-star { font-size: 26px; color: var(--accent); line-height: 1; }
+    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+    h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 30px; }
+    h2 { font-size: 18px; font-weight: 700; margin: 22px 0 6px; }
+    p, li { color: var(--text); }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .contact {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px 24px; margin: 8px 0 28px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .contact strong { font-size: 18px; color: var(--text); }
+    .contact small { color: var(--muted); display: block; margin-top: 2px; }
+    .contact a.btn {
+      background: var(--accent); color: #14131f; padding: 10px 18px;
+      border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 14px;
+    }
+    .faq { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 6px 24px 18px; }
+    .faq h2:first-of-type { margin-top: 18px; }
+    footer { color: var(--muted); font-size: 13px; margin-top: 48px; border-top: 1px solid var(--border); padding-top: 24px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand">
+      <span class="brand-star" aria-hidden="true">&#10022;</span>
+      <span class="brand-name">VESPER</span>
+    </div>
+
+    <h1>Support</h1>
+    <p class="meta">Help, FAQs and contact.</p>
+
+    <div class="contact">
+      <div>
+        <strong>Email me</strong>
+        <small>I aim to reply within a couple of days.</small>
+      </div>
+      <a class="btn" href="mailto:harryattenborough@gmail.com">harryattenborough@gmail.com</a>
+    </div>
+
+    <div class="faq">
+      <h2>Do I need an account?</h2>
+      <p>No. Vesper has no accounts or sign-in. Your birth details and your Journal stay on your device.</p>
+
+      <h2>How is my Card of the Day chosen?</h2>
+      <p>It's drawn once per day from a seed unique to your device, so it stays the same all day (and differs from anyone else's). Open the <em>Today</em> tab and turn the card over to reveal it.</p>
+
+      <h2>How do I get a personal horoscope?</h2>
+      <p>On the <em>Stars</em> tab, tap <em>Add your details</em> and enter your birth date, time and place. Adding your birth time unlocks your Rising sign and a more precise Moon.</p>
+
+      <h2>How do I remove my birth details?</h2>
+      <p>On the <em>Stars</em> tab, tap the <em>&middot;&middot;&middot;</em> menu on your reading and choose <em>Remove</em>. Everything is stored only on your device, so it's gone immediately.</p>
+
+      <h2>Can I turn reversed cards off, or get a new daily card?</h2>
+      <p>Yes. <em>Settings</em> has a <em>Use reversed cards</em> toggle, and <em>Reset today's card</em> draws a fresh Card of the Day for the rest of the day.</p>
+
+      <h2>Are the readings "real"?</h2>
+      <p>Vesper is made for reflection and enjoyment — a calm daily habit and a beautiful deck, not a prediction of the future. Take what's useful and leave the rest.</p>
+    </div>
+
+    <p style="margin-top:22px;font-size:14px;color:var(--muted)">See also the <a href="../privacy/">Privacy Policy</a>.</p>
+
+    <footer>
+      &#10022; Vesper &middot; &copy; 2026 Harry Attenborough
+    </footer>
+  </main>
+</body>
+</html>
