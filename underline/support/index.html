@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Underline — Support</title>
+  <meta name="description" content="Help, FAQs and contact for Underline, the metro builder set in real cities." />
+  <style>
+    :root {
+      --bg: #14161B;
+      --surface: #1C1F27;
+      --accent: #F0A400;
+      --accent2: #46B0E4;
+      --text: #F2F3F5;
+      --muted: #99A0AC;
+      --border: #2A2E38;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 96px; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .brand-mark { display: block; }
+    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+    h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 30px; }
+    h2 { font-size: 18px; font-weight: 700; margin: 22px 0 6px; }
+    p, li { color: var(--text); }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .contact {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px 24px; margin: 8px 0 28px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .contact strong { font-size: 18px; color: var(--text); }
+    .contact small { color: var(--muted); display: block; margin-top: 2px; }
+    .contact a.btn {
+      background: var(--accent); color: #14131f; padding: 10px 18px;
+      border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 14px;
+    }
+    .faq { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 6px 24px 18px; }
+    .faq h2:first-of-type { margin-top: 18px; }
+    footer { color: var(--muted); font-size: 13px; margin-top: 48px; border-top: 1px solid var(--border); padding-top: 24px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100" width="30" height="30" aria-hidden="true">
+        <g fill="none" stroke-linecap="round" stroke-width="8.8">
+          <path d="M10,12 L10,44 A40,40 0 0,0 90,44 L90,12" stroke="#E4322B"/>
+          <path d="M21.5,12 L21.5,44 A28.5,28.5 0 0,0 78.5,44 L78.5,12" stroke="#F0A400"/>
+          <path d="M33,12 L33,44 A17,17 0 0,0 67,44 L67,12" stroke="#1D9BD8"/>
+        </g>
+        <circle cx="50" cy="72.5" r="7.6" fill="#14161B"/>
+        <circle cx="50" cy="72.5" r="5.6" fill="#ffffff"/>
+      </svg>
+      <span class="brand-name">UNDERLINE</span>
+    </div>
+
+    <h1>Support</h1>
+    <p class="meta">Help, FAQs and contact.</p>
+
+    <div class="contact">
+      <div>
+        <strong>Email me</strong>
+        <small>I aim to reply within a couple of days.</small>
+      </div>
+      <a class="btn" href="mailto:harryattenborough@gmail.com">harryattenborough@gmail.com</a>
+    </div>
+
+    <div class="faq">
+      <h2>Do I need an account, or an internet connection?</h2>
+      <p>Neither. Underline has no accounts and no sign-in, and every city's map is bundled inside the app — so it works on a plane, on the Underground, and anywhere else with no signal.</p>
+
+      <h2>What does the one-off purchase unlock?</h2>
+      <p>Every city beyond the five free ones, the commissions set in those cities, and unlimited-money mode. It is a single payment, not a subscription.</p>
+
+      <h2>Which cities are free?</h2>
+      <p>London, New York, Tokyo, Sydney and Bogot&aacute; &mdash; one on each continent the game covers &mdash; together with fifty of the commissions.</p>
+
+      <h2>I bought the unlock but a city is still locked.</h2>
+      <p>Open <em>Unlock all</em> and tap <em>Restore purchase</em>. That asks the App Store to re-check what your Apple Account owns. If it still doesn't appear, make sure you're signed in with the same Apple Account you bought it on.</p>
+
+      <h2>My line is losing money. What am I doing wrong?</h2>
+      <p>Usually one of three things. The line runs somewhere nobody travels between &mdash; check the residents and jobs overlays before you draw. Or it's tunnelled where it didn't need to be, since tunnels cost most under expensive ground. Or it's running more trains and carriages than its riders need: every train costs money to run whether it's full or not.</p>
+
+      <h2>What do the colours on the map mean?</h2>
+      <p>While you're drawing, the violet-to-pink wash is land value &mdash; the pinker the ground, the more a tunnel under it costs. The green-to-red glow along your lines is how crowded each stretch is. Both have a key on screen, and you can switch overlays from the eye button.</p>
+
+      <h2>Are the cities real?</h2>
+      <p>Yes. The maps are real street geography, and where people live and work is built from real population and employment data, so demand is not invented. Put a station where nobody is and nobody will ride it.</p>
+
+      <h2>Where do the maps and data come from?</h2>
+      <p>Map geography is derived from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; OpenStreetMap contributors, available under the Open Database Licence. Population and employment grids come from the European Commission's Global Human Settlement Layer, and UK figures from the Office for National Statistics under the Open Government Licence.</p>
+
+      <h2>How do I delete a game?</h2>
+      <p>On the home screen, tap the <em>&middot;&middot;&middot;</em> button on a city card and choose to delete it. Saves live only on your device, so it's gone immediately.</p>
+    </div>
+
+    <p style="margin-top:22px;font-size:14px;color:var(--muted)">See also the <a href="../privacy/">Privacy Policy</a>.</p>
+
+    <footer>
+      Underline &middot; &copy; 2026 Harry Attenborough
+    </footer>
+  </main>
+</body>
+</html>
