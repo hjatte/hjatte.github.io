@@ -59,7 +59,7 @@
     <h2>Short version</h2>
     <ul>
       <li><strong>Wick collects nothing.</strong> No accounts, no sign-in, no analytics, no crash reporting, no advertising, no tracking across other apps.</li>
-      <li><strong>Wick has no server.</strong> The app makes no network requests at all. There is nowhere for your data to be sent, even in principle.</li>
+      <li><strong>Wick has no server of its own.</strong> The only thing it fetches is map imagery from Apple Maps, and only while the walking map is open.</li>
       <li>Your health data is read from Apple Health on your device, used on your device, and <strong>never leaves it</strong>.</li>
       <li>Health data is <strong>never</strong> used for advertising, never sold, and never shared with anyone.</li>
       <li>The one-off purchase is handled by <strong>Apple's App Store</strong>. Wick never sees your payment details.</li>
@@ -82,8 +82,13 @@
     </ul>
     <p>If you delete the app, this is removed with it. Your Health data belongs to Health and is unaffected.</p>
 
+    <h2>Location, and the walking map</h2>
+    <p>Wick has a walking game: embers are scattered within a kilometre of you and you collect them on foot. To draw that map and point you at them, the app asks for your location <strong>while you are using it</strong>. It does not ask for background or &ldquo;always&rdquo; access and does not follow you when the map is closed.</p>
+    <p>Your position is read on your device and used on your device. Wick does not store your location, does not keep a history of where you have been, and has nowhere to send it. What the app records when you collect an ember is that an ember with a particular identifier was collected &mdash; not where you were standing.</p>
+    <p>The map itself is Apple Maps. Drawing it means your device asks Apple for map imagery for the area you are looking at, which is a request to Apple and is handled under <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>. Wick does not see, receive or keep anything from it. The same applies on Apple Watch, which uses its own location to point you at the nearest ember.</p>
+
     <h2>What is sent over the network</h2>
-    <p>Nothing. Wick contains no networking code: no analytics SDK, no crash reporter, no advertising SDK, no remote configuration, no sync service of its own. The app works the same with the device in aeroplane mode.</p>
+    <p>Map imagery, and nothing else. Wick contains no analytics SDK, no crash reporter, no advertising SDK, no remote configuration and no sync service of its own. Every other screen in the app works with the device in aeroplane mode.</p>
 
     <h2>Purchases</h2>
     <p>Wick is free for thirty days and then offers one non-consumable in-app purchase, which unlocks the body clock, jet-lag plans and the training analysis. The transaction is handled entirely by Apple through the App Store. Wick receives only a confirmation from the operating system that the purchase is owned by the Apple Account signed in on the device; it never sees your name, your payment details or your Apple Account.</p>
@@ -92,13 +97,16 @@
     <p>If you allow them, Wick schedules local notifications on your device &mdash; when your peak window opens, when it is time to dim the lights. They are built and delivered on the device. No push server is involved and nothing is sent anywhere to produce them.</p>
 
     <h2>Third-party services</h2>
-    <p>None. Wick includes no third-party SDKs of any kind.</p>
+    <p>None. Wick includes no third-party SDKs of any kind. Apple Maps and Game Center are Apple's own services, built into the operating system, and are described above.</p>
 
     <h2>Children</h2>
     <p>Wick does not knowingly target or collect data from children under 13. Since the app collects no data from anyone, it collects none from children either.</p>
 
+    <h2>Game Center</h2>
+    <p>The ember leaderboard is run by Apple's Game Center. If you sign in to it, Wick submits one number: the embers you have earned in the last seven days. It sends nothing else, and it never sends your location, your health data or anything about your training. Game Center is Apple's service and your use of it is covered by <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>. You can ignore it entirely and the rest of the app is unaffected.</p>
+
     <h2>Permissions</h2>
-    <p>Wick asks for Health access and, optionally, notifications. It does not request your location, contacts, photos, camera, microphone or App Tracking Transparency.</p>
+    <p>Wick asks for Health access, your location while you are using the walking map, and, optionally, notifications. It does not request background location, contacts, photos, camera, microphone or App Tracking Transparency.</p>
 
     <h2>Changes to this policy</h2>
     <p>If this policy changes, the updated version will be published at the same URL where you are reading it, and the "Last updated" date above will change.</p>
