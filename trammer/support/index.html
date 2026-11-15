@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trammer — Support</title>
+  <meta name="description" content="Help, FAQs and contact for Trammer, the game about building tram networks on real city maps." />
+  <style>
+    :root {
+      --bg: #F7F7F5;
+      --surface: #FFFFFF;
+      --accent: #B5351F;
+      --accent2: #1C6B45;
+      --text: #121212;
+      --muted: #6E6E6E;
+      --border: #E2E2DE;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 24px 96px; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .brand-mark { display: block; }
+    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+    h1 { font-size: 36px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; }
+    .meta { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+    .contact {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 20px; margin-bottom: 36px;
+    }
+    .contact small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .btn {
+      background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+      padding: 10px 16px; font-weight: 600; text-decoration: none; font-size: 15px;
+    }
+    .faq h2 { font-size: 18px; font-weight: 700; color: var(--accent); margin: 30px 0 8px; }
+    p, ul { margin: 0 0 14px; }
+    ul { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(181,53,31,0.35); }
+    a:hover { border-bottom-color: var(--accent); }
+    em { font-style: normal; font-weight: 600; }
+    footer { margin-top: 64px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); padding-top: 24px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100" width="30" height="30" aria-hidden="true">
+        <rect x="22" y="8" width="56" height="70" rx="9" fill="#B5351F"/>
+        <rect x="30" y="22" width="40" height="20" rx="3" fill="#F7F7F5"/>
+        <rect x="48" y="22" width="4" height="20" fill="#B5351F"/>
+        <rect x="31" y="52" width="13" height="11" rx="2" fill="#F7F7F5"/>
+        <rect x="56" y="52" width="13" height="11" rx="2" fill="#F7F7F5"/>
+        <rect x="46" y="0" width="8" height="10" fill="#121212"/>
+        <rect x="14" y="84" width="72" height="6" rx="3" fill="#121212"/>
+      </svg>
+      <span class="brand-name">TRAMMER</span>
+    </div>
+
+    <h1>Support</h1>
+    <p class="meta">Help, FAQs and contact.</p>
+
+    <div class="contact">
+      <div>
+        <strong>Email me</strong>
+        <small>I aim to reply within a couple of days.</small>
+      </div>
+      <a class="btn" href="mailto:harryattenborough@gmail.com">harryattenborough@gmail.com</a>
+    </div>
+
+    <div class="faq">
+      <h2>Do I need an account, or an internet connection?</h2>
+      <p>Neither. Trammer has no accounts and no sign-in, and every city is baked into the app &mdash; so it works on a plane, on the Underground, and anywhere else with no signal.</p>
+
+      <h2>How do I lay track?</h2>
+      <p>Tap one point, then another. The track follows the street network between them, the way a real alignment has to, and the running total shows what it will cost before you commit. <em>Done</em> finishes the run; <em>Undo</em> takes back the last stretch and refunds it.</p>
+
+      <h2>Can I lay track where there is no street?</h2>
+      <p>Yes. Start on a street, then tap the street on the far side of a square, a park or the inside of a block, and the track cuts straight across the open ground between them. It costs more per kilometre than laying along a street, because new alignment does, and the game only offers it when going round would be meaningfully longer.</p>
+
+      <h2>Why won't it lay track across that particular gap?</h2>
+      <p>Something solid is in the way. A cut is refused if the straight line between the two points crosses a <em>building</em> or <em>water</em>, and both ends have to be a street &mdash; you cannot start a line in the middle of open ground. Very long gaps are refused too: beyond about 400 m it stops being a tram alignment.</p>
+
+      <h2>Why is the tram taking such a long way round?</h2>
+      <p>Because that is the shortest way the streets allow. Canal cities are the extreme case: a crossing that looks obvious on the map may have no bridge a tram could use. Cutting across open ground, above, is often the answer &mdash; and if the detour is truly absurd the game now says so and tells you the price before you buy it.</p>
+
+      <h2>Which cities are free, and what is the City Pack?</h2>
+      <p>Prague, Amsterdam and Toronto are free &mdash; chosen to do three different jobs rather than to be the three best boards. The City Pack is a single purchase that opens the other fourteen and lifts the budget limit.</p>
+
+      <h2>I bought the City Pack and it hasn't appeared.</h2>
+      <p>Open the city list and tap <em>Restore purchases</em>. That asks the App Store to re-check what your Apple Account owns. If it still doesn't appear, make sure you're signed in with the same Apple Account you bought it on.</p>
+
+      <h2>What does a reserved lane do?</h2>
+      <p>It takes your track out of general traffic. Track in a traffic lane is held up by the cars on it, so a reserved lane buys back journey time on the stretches where congestion is actually costing you &mdash; which is why the game will tell you which stretch is losing the most.</p>
+
+      <h2>Why did my line's ridership fall after I extended it?</h2>
+      <p>A longer line is not automatically a better one. Ridership follows where people actually want to go, and a detour that adds minutes for everyone already on board can cost more than the new stops bring in. The shape of the line is the decision, not its length.</p>
+
+      <h2>How do I start a city again?</h2>
+      <p>Open the city from the list and choose to reset it. That clears the network on that board only; the others keep theirs.</p>
+
+      <h2>How do I delete my saved networks?</h2>
+      <p>Delete the app. Your saves live only on your device, so they go with it &mdash; there is no copy in iCloud or anywhere else, and that also means they cannot be recovered afterwards.</p>
+
+      <h2>The city map is wrong, or a street is missing.</h2>
+      <p>The maps are built from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, so a missing street is usually missing there too. Tell me which city and roughly where, and I will look at it on the next bake.</p>
+    </div>
+
+    <p style="margin-top:22px;font-size:14px;color:var(--muted)">See also the <a href="../privacy/">Privacy Policy</a>.</p>
+
+    <footer>
+      Trammer &middot; &copy; 2026 Harry Attenborough
+    </footer>
+  </main>
+</body>
+</html>
